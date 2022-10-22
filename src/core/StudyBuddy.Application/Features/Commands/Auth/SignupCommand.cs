@@ -1,12 +1,16 @@
-﻿using System.Text.Json;
+﻿using System.Text;
+using System.Text.Json;
 using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Distributed;
 using StudyBuddy.Application.Dtos;
+using StudyBuddy.Application.Helpers;
+using StudyBuddy.Application.Interfaces;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
 
-namespace StudyBuddy.Application.Features.Commands.User;
+namespace StudyBuddy.Application.Features.Commands.Auth;
 
 public class SignupCommand : IRequest<Response<UserDto>>
 {
@@ -19,13 +23,19 @@ public class SignupCommand : IRequest<Response<UserDto>>
  {
      private readonly UserManager<AppUser> _userManager;
      private readonly IMapper _mapper;
+     private readonly ITokenService _tokenService;
+     private readonly IDistributedCache _distributedCache;
+
+     private readonly IUnitOfWork _unitOfWork;
      //private readonly IHttpClientFactory _httpClientFactory;
 
-     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper)
+     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, IUnitOfWork unitOfWork)
      {
          _userManager = userManager;
          _mapper = mapper;
-         //_httpClientFactory = httpClientFactory;
+         _tokenService = tokenService;
+         _distributedCache = distributedCache;
+         _unitOfWork = unitOfWork;
      }
 
      public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
@@ -33,21 +43,18 @@ public class SignupCommand : IRequest<Response<UserDto>>
          var user = _mapper.Map<AppUser>(request);
          var result=await _userManager.CreateAsync(user, request.Password);
          if (!result.Succeeded)
-             return Response<UserDto>.Fail("An error occurred while registering the user.", 500);
-         // var client = _httpClientFactory.CreateClient();
-         // var res = (await client.SendAsync(new HttpRequestMessage(HttpMethod.Post, "api/Auth/CreateToken"), cancellationToken));
-         // var response = await JsonSerializer.DeserializeAsync<Response<TokenDto>>
-         //     (await res.Content.ReadAsStreamAsync(cancellationToken), cancellationToken: cancellationToken);
-         // if (response.Error.Errors.Any())
-         //     return Response<UserDto>.Fail(errorDto: response.Error, response.StatusCode);
-         // var userDto = new UserDto
-         // {
-         //     AccessToken = response.Data.AccessToken,
-         //     Email = request.Email,
-         //     AccessTokenExpiration = response.Data.AccessTokenExpiration,
-         //     UserName = request.Email
-         // };
-         // return Response<UserDto>.Success(userDto, 201);
-         return null;
+             return Response<UserDto>.Fail(result.Errors.FirstOrDefault().Description, 500);
+         await _unitOfWork.CommitAsync();
+         var token = _tokenService.CreateToken(request.Email,user.Id,request.UserName);
+         var options = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(token.RefreshTokenExpiration));
+         await _distributedCache.SetAsync($"id:{user.Id}",Encoding.UTF8.GetBytes(token.RefreshToken),options, cancellationToken);
+         var userDto = new UserDto
+         {
+            UserName = request.UserName,
+            AccessToken = token.AccessToken,
+            AccessTokenExpiration = token.AccessTokenExpiration,
+            Email = request.Email
+         };
+         return Response<UserDto>.Success(userDto, 201);
      }
 }

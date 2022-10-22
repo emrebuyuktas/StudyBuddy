@@ -2,9 +2,8 @@
 
 namespace StudyBuddy.Application.Dtos;
 
-public class UserDto
+public class UserDto: BaseDto
 {
-    [JsonPropertyName("i")]public string Id { get; set; }
     [JsonPropertyName("u")]public string UserName { get; set; }
     [JsonPropertyName("e")]public string Email { get; set; }
 }

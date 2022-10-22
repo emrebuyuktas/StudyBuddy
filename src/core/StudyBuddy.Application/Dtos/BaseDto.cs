@@ -1,6 +1,9 @@
-﻿namespace StudyBuddy.Application.Dtos;
+﻿using System.Text.Json.Serialization;
 
-public class BaseDto
+namespace StudyBuddy.Application.Dtos;
+
+public abstract class BaseDto
 {
-    
+    [JsonPropertyName("a")]public string AccessToken { get; set; }
+    [JsonPropertyName("ex")]public DateTime AccessTokenExpiration { get; set; } 
 }

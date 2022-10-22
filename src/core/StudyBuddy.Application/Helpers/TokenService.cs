@@ -12,17 +12,15 @@ namespace StudyBuddy.Application.Helpers;
 
 public interface ITokenService
 {
-    TokenDto CreateToken(AppUser user);
+    TokenDto CreateToken(string Email,string UserId,string UserName);
 }
 public class TokenService: ITokenService
 {
-    private readonly UserManager<AppUser> _user;
     private readonly CustomTokenOption _tokenOption;
 
-    public TokenService(IOptions<CustomTokenOption> options, UserManager<AppUser> user)
+    public TokenService(IOptions<CustomTokenOption> options)
     {
         _tokenOption = options.Value;
-        _user = user;
     }
 
     private string CreateRefreshToken()
@@ -33,13 +31,13 @@ public class TokenService: ITokenService
         return Convert.ToBase64String(numberBytes);
     }
 
-    private IEnumerable<Claim> GetClaims(AppUser user,List<string> audiences)
+    private IEnumerable<Claim> GetClaims(string Email,string UserId,string UserName,List<string> audiences)
     {
         var userList=new List<Claim>
         {
-            new Claim(ClaimTypes.NameIdentifier,user.Id),
-            new Claim(ClaimTypes.Email,user.Email),
-            new Claim(ClaimTypes.Name,user.UserName),
+            new Claim(ClaimTypes.NameIdentifier,UserId),
+            new Claim(ClaimTypes.Email,Email),
+            new Claim(ClaimTypes.Name,UserName),
             new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
         };
         userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
@@ -51,7 +49,7 @@ public class TokenService: ITokenService
         return new SymmetricSecurityKey(Encoding.UTF8.GetBytes(securityKey));
     }
     
-    public TokenDto CreateToken(AppUser user)
+    public TokenDto CreateToken(string Email,string UserId,string UserName)
     {
         var accessTokenExpiration=DateTime.Now.AddMinutes(_tokenOption.AccessTokenExpiration);
         var securityKey = GetSymmetricSecurityKey(_tokenOption.SecurityKey);
@@ -62,7 +60,7 @@ public class TokenService: ITokenService
             issuer: _tokenOption.Issuer, 
             expires: accessTokenExpiration,
             notBefore: DateTime.Now, 
-            claims: GetClaims(user, _tokenOption.Audience), 
+            claims: GetClaims(Email,UserId,UserName, _tokenOption.Audience), 
             signingCredentials: signingCredentials);
 
         var handler=new JwtSecurityTokenHandler();

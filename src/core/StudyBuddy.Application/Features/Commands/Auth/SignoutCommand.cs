@@ -1,6 +1,29 @@
-﻿namespace StudyBuddy.Application.Features.Commands.Auth;
+﻿using MediatR;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.Extensions.Caching.Distributed;
+using StudyBuddy.Application.Dtos;
+using StudyBuddy.Application.Wrappers;
+using StudyBuddy.Domain.Entities;
 
-public class SignoutCommand
+namespace StudyBuddy.Application.Features.Commands.Auth;
+
+public class SignoutCommand : IRequest<Response<NoDataDto>>
 {
-    
+    public string UserId { get; set; }
+}
+
+public class SignoutCommandHandler : IRequestHandler<SignoutCommand, Response<NoDataDto>>
+{
+    private readonly IDistributedCache _distributedCache;
+
+    public SignoutCommandHandler(IDistributedCache distributedCache)
+    {
+        _distributedCache = distributedCache;
+    }
+
+    public async Task<Response<NoDataDto>> Handle(SignoutCommand request, CancellationToken cancellationToken)
+    {
+        await _distributedCache.RemoveAsync($"id:{request.UserId}", cancellationToken);
+        return Response<NoDataDto>.Success(204);
+    }
 }
