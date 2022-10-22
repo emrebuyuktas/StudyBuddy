@@ -48,9 +48,10 @@ public class GenericRepository<T> : IGenericRepository<T> where T: class
         return await query.ToListAsync();
     }
 
-    public async Task CreateAsync(T entity)
+    public async Task<T> CreateAsync(T entity)
     {
-        await _dbSet.AddAsync(entity);
+        var result=await _dbSet.AddAsync(entity);
+        return result.Entity;
     }
 
     public void UpdateAsync(T entity)

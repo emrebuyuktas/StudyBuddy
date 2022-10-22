@@ -25,8 +25,4 @@
     <ProjectReference Include="..\..\Core\StudyBuddy.Domain\StudyBuddy.Domain.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Configuration" />
-  </ItemGroup>
-
 </Project>

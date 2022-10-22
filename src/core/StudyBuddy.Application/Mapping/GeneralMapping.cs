@@ -1,5 +1,7 @@
 ﻿using AutoMapper;
+using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Features.Commands.Auth;
+using StudyBuddy.Application.Features.Commands.Classroom;
 using StudyBuddy.Domain.Entities;
 
 namespace StudyBuddy.Application.Mapping;
@@ -9,5 +11,10 @@ public class GeneralMapping : Profile
     public GeneralMapping()
     {
         CreateMap<SignupCommand, AppUser>();
+        CreateMap<ClassroomDto, Classroom>().ReverseMap();
+        CreateMap<MessageDto, Message>().ReverseMap();
+        CreateMap<TagDto, Tag>().ReverseMap();
+        CreateMap<AppUser, UserDto>().ReverseMap();
+        CreateMap<CreateClassroomCommand, Classroom>();
     }
 }
