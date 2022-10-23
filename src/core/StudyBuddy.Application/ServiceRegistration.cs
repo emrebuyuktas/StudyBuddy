@@ -15,7 +15,7 @@ public static class ServiceRegistration
         services.AddScoped<ITokenService, TokenService>();
         services.AddStackExchangeRedisCache(action =>
         {
-            action.Configuration = "localhost:6379";
+            action.Configuration = "studybuddyrds.redis.cache.windows.net:6380,password=KCWRkak4UbRia7YZqJthGao4OnC2MZ7BhAzCaC0zJEM=,ssl=True,abortConnect=False";
         });
         
     }
