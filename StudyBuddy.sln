@@ -9,7 +9,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6F02434B-7
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Application", "src\core\StudyBuddy.Application\StudyBuddy.Application.csproj", "{D0C149DB-2246-4E52-A4C9-A5AF91278CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Domain", "src\Core\StudyBuddy.Domain\StudyBuddy.Domain.csproj", "{49D0580B-A9D4-42D1-BF50-5B845EACFA62}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Domain", "src\core\StudyBuddy.Domain\StudyBuddy.Domain.csproj", "{49D0580B-A9D4-42D1-BF50-5B845EACFA62}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8058F5B1-B0CB-4F04-8FAD-F1BE8B7589BF}"
 EndProject
