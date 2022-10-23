@@ -22,7 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\core\StudyBuddy.Application\StudyBuddy.Application.csproj" />
-    <ProjectReference Include="..\..\Core\StudyBuddy.Domain\StudyBuddy.Domain.csproj" />
+    <ProjectReference Include="..\..\core\StudyBuddy.Domain\StudyBuddy.Domain.csproj" />
   </ItemGroup>
 
 </Project>
