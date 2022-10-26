@@ -38,7 +38,8 @@ public class TokenService: ITokenService
             new Claim(ClaimTypes.NameIdentifier,UserId),
             new Claim(ClaimTypes.Email,Email),
             new Claim(ClaimTypes.Name,UserName),
-            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString())
+            new Claim(JwtRegisteredClaimNames.Jti,Guid.NewGuid().ToString()),
+            new Claim("send.message.signalR",Guid.NewGuid().ToString())
         };
         userList.AddRange(audiences.Select(x => new Claim(JwtRegisteredClaimNames.Aud, x)));
         return userList;
