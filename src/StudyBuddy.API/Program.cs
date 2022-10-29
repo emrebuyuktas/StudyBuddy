@@ -23,13 +23,13 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 });
 builder.Services.AddDbContext<ApplicationDbContext>(options =>
 {
-    options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnectionString"), sqlOptions =>
+    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"), sqlOptions =>
     {
         sqlOptions.MigrationsAssembly("StudyBuddy.Persistence");
     });
 });
 builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-
+builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
 //builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>

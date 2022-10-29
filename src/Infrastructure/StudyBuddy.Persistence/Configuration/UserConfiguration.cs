@@ -8,7 +8,7 @@ public class UserConfiguration : IEntityTypeConfiguration<AppUser>
 {
     public void Configure(EntityTypeBuilder<AppUser> builder)
     {
-        builder.HasMany<Classroom>(c => c.Classrooms).WithMany(u => u.Users);
+        //builder.HasMany<Classroom>(c => c.Classrooms).WithMany(u => u.Users);
         builder.HasMany<Message>(m => m.Messages).WithOne(u => u.User).HasForeignKey(k=>k.UserId);
         
     }

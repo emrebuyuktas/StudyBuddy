@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using StudyBuddy.Application.Features.Commands.Classroom;
+using StudyBuddy.Application.Features.Queries.Classroom;
 using StudyBuddy.Application.Wrappers;
 
 namespace StudyBuddy.API.Controllers.Classroom
@@ -26,6 +27,20 @@ namespace StudyBuddy.API.Controllers.Classroom
         public async Task<IActionResult> JoinClass(JoinClassroomCommand joinClassroomCommand)
         {
             var result=await _mediator.Send(joinClassroomCommand);
+            return ActionResult(result);
+        }
+
+        [HttpGet("{userId}")]
+        public async Task<IActionResult> GetClassroomsByUser(string userId)
+        {
+            var result = await _mediator.Send(new GetAllClassroomsByUserQuery { UserId = userId });
+            return ActionResult(result);
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> GetClassroom(string classroomId,string userId)
+        {
+            var result = await _mediator.Send(new GetClassroomByUserQuery { classroomId =  classroomId, UserId = userId});
             return ActionResult(result);
         }
     }

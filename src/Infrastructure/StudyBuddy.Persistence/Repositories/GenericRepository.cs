@@ -7,7 +7,7 @@ namespace StudyBuddy.Persistence.Repositories;
 
 public class GenericRepository<T> : IGenericRepository<T> where T: class
 {
-    private readonly ApplicationDbContext _context;
+    public readonly ApplicationDbContext _context;
     private readonly DbSet<T> _dbSet;
 
     public GenericRepository(ApplicationDbContext context)
@@ -63,4 +63,5 @@ public class GenericRepository<T> : IGenericRepository<T> where T: class
     {
         _dbSet.Remove(entity);
     }
+    
 }

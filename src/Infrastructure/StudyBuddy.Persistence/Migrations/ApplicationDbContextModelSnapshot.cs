@@ -22,21 +22,6 @@ namespace StudyBuddy.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
-            modelBuilder.Entity("AppUserClassroom", b =>
-                {
-                    b.Property<Guid>("ClassroomsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<string>("UsersId")
-                        .HasColumnType("nvarchar(450)");
-
-                    b.HasKey("ClassroomsId", "UsersId");
-
-                    b.HasIndex("UsersId");
-
-                    b.ToTable("AppUserClassroom");
-                });
-
             modelBuilder.Entity("ClassroomTag", b =>
                 {
                     b.Property<Guid>("ClassroomsId")
@@ -311,19 +296,22 @@ namespace StudyBuddy.Persistence.Migrations
                     b.ToTable("Tag");
                 });
 
-            modelBuilder.Entity("AppUserClassroom", b =>
+            modelBuilder.Entity("StudyBuddy.Domain.Entities.UserClassroom", b =>
                 {
-                    b.HasOne("StudyBuddy.Domain.Entities.Classroom", null)
-                        .WithMany()
-                        .HasForeignKey("ClassroomsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<Guid>("ClassroomId")
+                        .HasColumnType("uniqueidentifier");
 
-                    b.HasOne("StudyBuddy.Domain.Entities.AppUser", null)
-                        .WithMany()
-                        .HasForeignKey("UsersId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Property<string>("UserId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.Property<DateTime>("JoinDate")
+                        .HasColumnType("datetime2");
+
+                    b.HasKey("ClassroomId", "UserId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("UserClassroom");
                 });
 
             modelBuilder.Entity("ClassroomTag", b =>
@@ -411,14 +399,37 @@ namespace StudyBuddy.Persistence.Migrations
                     b.Navigation("User");
                 });
 
+            modelBuilder.Entity("StudyBuddy.Domain.Entities.UserClassroom", b =>
+                {
+                    b.HasOne("StudyBuddy.Domain.Entities.Classroom", "Classroom")
+                        .WithMany("Users")
+                        .HasForeignKey("ClassroomId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudyBuddy.Domain.Entities.AppUser", "AppUser")
+                        .WithMany("Classrooms")
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("AppUser");
+
+                    b.Navigation("Classroom");
+                });
+
             modelBuilder.Entity("StudyBuddy.Domain.Entities.AppUser", b =>
                 {
+                    b.Navigation("Classrooms");
+
                     b.Navigation("Messages");
                 });
 
             modelBuilder.Entity("StudyBuddy.Domain.Entities.Classroom", b =>
                 {
                     b.Navigation("Messages");
+
+                    b.Navigation("Users");
                 });
 #pragma warning restore 612, 618
         }

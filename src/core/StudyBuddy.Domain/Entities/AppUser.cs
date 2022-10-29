@@ -9,7 +9,8 @@ namespace StudyBuddy.Domain.Entities
 {
     public class AppUser: IdentityUser
     {
-        public virtual List<Classroom> Classrooms { get; set; }
+        //public virtual List<Classroom> Classrooms { get; set; }
+        public ICollection<UserClassroom> Classrooms { get; set; }
         public List<Message> Messages { get; set; }
     }
 }
