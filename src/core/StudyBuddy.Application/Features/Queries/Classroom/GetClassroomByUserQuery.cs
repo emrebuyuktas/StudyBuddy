@@ -1,9 +1,8 @@
 ﻿using MediatR;
-using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application.Dtos;
-using StudyBuddy.Application.Interfaces.Repositories;
+using StudyBuddy.Application.Interfaces;
 using StudyBuddy.Application.Wrappers;
-using StudyBuddy.Domain.Entities;
 using IMapper = AutoMapper.IMapper;
 
 namespace StudyBuddy.Application.Features.Queries.Classroom;
@@ -16,17 +15,21 @@ public class GetClassroomByUserQuery : IRequest<Response<ClassroomDto>>
 
 public class GetClassroomByUserQueryHandler : IRequestHandler<GetClassroomByUserQuery, Response<ClassroomDto>>
 {
-    private readonly IClassroomRepository _classroomRepository;
     private readonly IMapper _mapper;
-    public GetClassroomByUserQueryHandler( IMapper mapper, IClassroomRepository classroomRepository)
+    private readonly IApplicationDbContext _dbContext;
+    public GetClassroomByUserQueryHandler( IMapper mapper, IApplicationDbContext dbContext)
     {
         _mapper = mapper;
-        _classroomRepository = classroomRepository;
+        _dbContext = dbContext;
     }
 
     public async Task<Response<ClassroomDto>> Handle(GetClassroomByUserQuery request, CancellationToken cancellationToken)
     {
-        var room = await _classroomRepository.GetClassWithUsersAsync(request.classroomId);
+        var room =  await _dbContext.Classrooms.Where(x => x.Id.ToString() == request.classroomId).Include(x=>x.Messages).Include(x=>x.Tags).
+            Include(x => x.Users).ThenInclude(x => x.AppUser).
+            SingleOrDefaultAsync(cancellationToken: cancellationToken);
+        
+        
         var users = new List<UserDto>();
         var joinDate = room.Users.ToList().Find(x => x.UserId == request.UserId)!.JoinDate;
         var test = room.Users.ToList();

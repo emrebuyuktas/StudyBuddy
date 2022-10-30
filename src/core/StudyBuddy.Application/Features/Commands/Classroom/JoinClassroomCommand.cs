@@ -1,9 +1,9 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Interfaces;
-using StudyBuddy.Application.Interfaces.Repositories;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
 
@@ -18,21 +18,20 @@ public class JoinClassroomCommand : IRequest<Response<ClassroomDto>>
 public class JoinClassroomCommandHandler : IRequestHandler<JoinClassroomCommand, Response<ClassroomDto>>
 {
     private readonly UserManager<AppUser> _userManager;
-    private readonly IGenericRepository<Domain.Entities.Classroom> _repository;
-    private readonly IUnitOfWork _unitOfWork;
     private readonly IMapper _mapper;
-    public JoinClassroomCommandHandler(UserManager<AppUser> userManager, IGenericRepository<Domain.Entities.Classroom> repository, IUnitOfWork unitOfWork, IMapper mapper)
+    private readonly IApplicationDbContext _dbContext;
+    public JoinClassroomCommandHandler(UserManager<AppUser> userManager, IMapper mapper, IApplicationDbContext dbContext)
     {
         _userManager = userManager;
-        _repository = repository;
-        _unitOfWork = unitOfWork;
         _mapper = mapper;
+        _dbContext = dbContext;
     }
 
     public async Task<Response<ClassroomDto>> Handle(JoinClassroomCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
-        var classroom = await _repository.GetAsync(x => x.Id == request.ClassroomId,x=>x.Users,x=>x.Messages);
+        var classroom = await _dbContext.Classrooms.Where(x => x.Id == request.ClassroomId).Include(x=>x.Users)
+            .Include(x=>x.Messages).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (user is null || classroom is null)
             return Response<ClassroomDto>.Fail("Something went wrong", 404);
         classroom.Users.Add(new UserClassroom
@@ -42,7 +41,7 @@ public class JoinClassroomCommandHandler : IRequestHandler<JoinClassroomCommand,
             Classroom = classroom,
             AppUser = user
         });
-        await _unitOfWork.CommitAsync();
+        await _dbContext.SaveChangesAsync();
         var userDtoList = new List<UserDto>();
         foreach (var classroomUser in classroom.Users)
         {

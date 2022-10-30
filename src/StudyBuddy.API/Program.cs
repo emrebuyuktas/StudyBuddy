@@ -1,17 +1,11 @@
 using System.Text.Json.Serialization;
-using MediatR;
 using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application;
-using StudyBuddy.Application.Features.Commands.Auth;
 using StudyBuddy.Application.Helpers;
 using StudyBuddy.Application.Interfaces;
-using StudyBuddy.Application.Interfaces.Repositories;
-using StudyBuddy.Application.Mapping;
 using StudyBuddy.Domain.Entities;
 using StudyBuddy.Persistence;
 using StudyBuddy.Persistence.Context;
-using StudyBuddy.Persistence.Repositories;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -21,15 +15,7 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
 });
-builder.Services.AddDbContext<ApplicationDbContext>(options =>
-{
-    options.UseSqlServer(builder.Configuration.GetConnectionString("LocalDB"), sqlOptions =>
-    {
-        sqlOptions.MigrationsAssembly("StudyBuddy.Persistence");
-    });
-});
-builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
-builder.Services.AddScoped<IClassroomRepository, ClassroomRepository>();
+builder.Services.AddInfrastructureServices(builder.Configuration);
 //builder.Services.AddHttpClient();
 builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>

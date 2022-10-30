@@ -13,10 +13,5 @@ public static class ServiceRegistration
         services.AddAutoMapper(assembly);
         services.AddMediatR(assembly);
         services.AddScoped<ITokenService, TokenService>();
-        services.AddStackExchangeRedisCache(action =>
-        {
-            action.Configuration = "localhost:6379";
-        });
-        
     }
 }
