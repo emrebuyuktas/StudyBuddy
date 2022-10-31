@@ -17,7 +17,6 @@ builder.Services.AddControllers().AddJsonOptions(x =>
 });
 builder.Services.AddInfrastructureServices(builder.Configuration);
 //builder.Services.AddHttpClient();
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
 {
     options.User.RequireUniqueEmail = true;

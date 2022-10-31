@@ -25,17 +25,17 @@ public class SignupCommand : IRequest<Response<UserDto>>
      private readonly IMapper _mapper;
      private readonly ITokenService _tokenService;
      private readonly IDistributedCache _distributedCache;
+     private readonly IApplicationDbContext _dbContext;
 
-     private readonly IUnitOfWork _unitOfWork;
      //private readonly IHttpClientFactory _httpClientFactory;
 
-     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, IUnitOfWork unitOfWork)
+     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, IApplicationDbContext dbContext)
      {
          _userManager = userManager;
          _mapper = mapper;
          _tokenService = tokenService;
          _distributedCache = distributedCache;
-         _unitOfWork = unitOfWork;
+         _dbContext = dbContext;
      }
 
      public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
@@ -44,7 +44,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
          var result=await _userManager.CreateAsync(user, request.Password);
          if (!result.Succeeded)
              return Response<UserDto>.Fail(result.Errors.FirstOrDefault().Description, 500);
-         await _unitOfWork.CommitAsync();
+         await _dbContext.SaveChangesAsync();
          var token = _tokenService.CreateToken(request.Email,user.Id,request.UserName);
          var options = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(token.RefreshTokenExpiration));
          await _distributedCache.SetAsync($"id:{user.Id}",Encoding.UTF8.GetBytes(token.RefreshToken),options, cancellationToken);
