@@ -7,17 +7,21 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{BBA4CD40-14F
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{6F02434B-76F5-4B12-8DF9-C8F01FC4132E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Application", "src\core\StudyBuddy.Application\StudyBuddy.Application.csproj", "{D0C149DB-2246-4E52-A4C9-A5AF91278CEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyBuddy.Application", "src\core\StudyBuddy.Application\StudyBuddy.Application.csproj", "{D0C149DB-2246-4E52-A4C9-A5AF91278CEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Domain", "src\core\StudyBuddy.Domain\StudyBuddy.Domain.csproj", "{49D0580B-A9D4-42D1-BF50-5B845EACFA62}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyBuddy.Domain", "src\core\StudyBuddy.Domain\StudyBuddy.Domain.csproj", "{49D0580B-A9D4-42D1-BF50-5B845EACFA62}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Infrastructure", "Infrastructure", "{8058F5B1-B0CB-4F04-8FAD-F1BE8B7589BF}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.Persistence", "src\Infrastructure\StudyBuddy.Persistence\StudyBuddy.Persistence.csproj", "{7C9D33DF-C319-4702-8EF4-CD9E0EDA4F15}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyBuddy.Persistence", "src\Infrastructure\StudyBuddy.Persistence\StudyBuddy.Persistence.csproj", "{7C9D33DF-C319-4702-8EF4-CD9E0EDA4F15}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Apis", "Apis", "{A6D1FC9B-28AE-4E68-9768-827FBDF2BB8E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.API", "src\StudyBuddy.API\StudyBuddy.API.csproj", "{B384553D-B083-48FA-9D69-C621C2269AFD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "StudyBuddy.API", "src\StudyBuddy.API\StudyBuddy.API.csproj", "{B384553D-B083-48FA-9D69-C621C2269AFD}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "UI", "UI", "{F7FB5F8F-8FB1-4637-AE0D-2D0AFEE99FCA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "StudyBuddy.WebUi", "src\UI\StudyBuddy.WebUi\StudyBuddy.WebUi.csproj", "{E25599B8-772C-4D58-9A1D-C61B2409C90B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -41,6 +45,10 @@ Global
 		{B384553D-B083-48FA-9D69-C621C2269AFD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{B384553D-B083-48FA-9D69-C621C2269AFD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{B384553D-B083-48FA-9D69-C621C2269AFD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E25599B8-772C-4D58-9A1D-C61B2409C90B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E25599B8-772C-4D58-9A1D-C61B2409C90B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E25599B8-772C-4D58-9A1D-C61B2409C90B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E25599B8-772C-4D58-9A1D-C61B2409C90B}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -53,6 +61,8 @@ Global
 		{7C9D33DF-C319-4702-8EF4-CD9E0EDA4F15} = {8058F5B1-B0CB-4F04-8FAD-F1BE8B7589BF}
 		{A6D1FC9B-28AE-4E68-9768-827FBDF2BB8E} = {BBA4CD40-14F7-4D41-B871-158DD9AD0126}
 		{B384553D-B083-48FA-9D69-C621C2269AFD} = {A6D1FC9B-28AE-4E68-9768-827FBDF2BB8E}
+		{F7FB5F8F-8FB1-4637-AE0D-2D0AFEE99FCA} = {BBA4CD40-14F7-4D41-B871-158DD9AD0126}
+		{E25599B8-772C-4D58-9A1D-C61B2409C90B} = {F7FB5F8F-8FB1-4637-AE0D-2D0AFEE99FCA}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {62E7EA2F-E6BB-43C5-B8E2-682D9AC2FF8F}
