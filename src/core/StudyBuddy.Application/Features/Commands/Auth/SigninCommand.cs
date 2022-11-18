@@ -1,9 +1,11 @@
 ﻿using System.Text;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Helpers;
+using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
 
@@ -15,20 +17,21 @@ public class SigninCommand : IRequest<Response<UserDto>>
     public string Password { get; set; }
 }
 
-public class SigninCommandHandler : IRequestHandler<SigninCommand, Response<UserDto>>
+public class SigninCommandHandler : RequestHandlerBase<SigninCommand, Response<UserDto>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly IDistributedCache _distributedCache;
 
-    public SigninCommandHandler(UserManager<AppUser> userManager, ITokenService tokenService, IDistributedCache distributedCache)
+    public SigninCommandHandler(UserManager<AppUser> userManager, ITokenService tokenService, IDistributedCache distributedCache,
+        IHttpContextAccessor contextAccessor) : base(contextAccessor)
     {
         _userManager = userManager;
         _tokenService = tokenService;
         _distributedCache = distributedCache;
     }
 
-    public async Task<Response<UserDto>> Handle(SigninCommand request, CancellationToken cancellationToken)
+    public override async Task<Response<UserDto>> Handle(SigninCommand request, CancellationToken cancellationToken)
     {
         var user =await  _userManager.FindByEmailAsync(request.Email);
         if (user is null)

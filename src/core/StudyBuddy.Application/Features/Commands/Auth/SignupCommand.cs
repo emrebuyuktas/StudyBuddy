@@ -2,11 +2,13 @@
 using System.Text.Json;
 using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Caching.Distributed;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Helpers;
 using StudyBuddy.Application.Interfaces;
+using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
 
@@ -19,7 +21,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
     public string Password { get; set; }
 }
 
- public class SignupCommandHandler : IRequestHandler<SignupCommand, Response<UserDto>>
+ public class SignupCommandHandler : RequestHandlerBase<SignupCommand, Response<UserDto>>
  {
      private readonly UserManager<AppUser> _userManager;
      private readonly IMapper _mapper;
@@ -29,7 +31,8 @@ public class SignupCommand : IRequest<Response<UserDto>>
 
      //private readonly IHttpClientFactory _httpClientFactory;
 
-     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, IApplicationDbContext dbContext)
+     public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, 
+         IApplicationDbContext dbContext,IHttpContextAccessor contextAccessor):base(contextAccessor)
      {
          _userManager = userManager;
          _mapper = mapper;
@@ -38,7 +41,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
          _dbContext = dbContext;
      }
 
-     public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
+     public override async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
      {
          var user = _mapper.Map<AppUser>(request);
          var result=await _userManager.CreateAsync(user, request.Password);

@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Interfaces;
+using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
 
@@ -15,19 +17,19 @@ public class JoinClassroomCommand : IRequest<Response<ClassroomDto>>
     public string UserId { get; set; }
 }
 
-public class JoinClassroomCommandHandler : IRequestHandler<JoinClassroomCommand, Response<ClassroomDto>>
+public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomCommand, Response<ClassroomDto>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
-    public JoinClassroomCommandHandler(UserManager<AppUser> userManager, IMapper mapper, IApplicationDbContext dbContext)
+    public JoinClassroomCommandHandler(UserManager<AppUser> userManager, IMapper mapper, IApplicationDbContext dbContext,IHttpContextAccessor contextAccessor):base(contextAccessor)
     {
         _userManager = userManager;
         _mapper = mapper;
         _dbContext = dbContext;
     }
 
-    public async Task<Response<ClassroomDto>> Handle(JoinClassroomCommand request, CancellationToken cancellationToken)
+    public override async Task<Response<ClassroomDto>> Handle(JoinClassroomCommand request, CancellationToken cancellationToken)
     {
         var user = await _userManager.FindByIdAsync(request.UserId);
         var classroom = await _dbContext.Classrooms.Where(x => x.Id == request.ClassroomId).Include(x=>x.Users)
