@@ -21,7 +21,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
     public string Password { get; set; }
 }
 
- public class SignupCommandHandler : RequestHandlerBase<SignupCommand, Response<UserDto>>
+ public class SignupCommandHandler : IRequestHandler<SignupCommand, Response<UserDto>>
  {
      private readonly UserManager<AppUser> _userManager;
      private readonly IMapper _mapper;
@@ -32,7 +32,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
      //private readonly IHttpClientFactory _httpClientFactory;
 
      public SignupCommandHandler(UserManager<AppUser> userManager, IMapper mapper, ITokenService tokenService, IDistributedCache distributedCache, 
-         IApplicationDbContext dbContext,IHttpContextAccessor contextAccessor):base(contextAccessor)
+         IApplicationDbContext dbContext)
      {
          _userManager = userManager;
          _mapper = mapper;
@@ -41,7 +41,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
          _dbContext = dbContext;
      }
 
-     public override async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
+     public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
      {
          var user = _mapper.Map<AppUser>(request);
          var result=await _userManager.CreateAsync(user, request.Password);

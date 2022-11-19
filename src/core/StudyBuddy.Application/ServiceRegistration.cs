@@ -1,5 +1,6 @@
 ﻿using System.Reflection;
 using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.DependencyInjection;
 using StudyBuddy.Application.Helpers;
 
@@ -13,5 +14,6 @@ public static class ServiceRegistration
         services.AddAutoMapper(assembly);
         services.AddMediatR(assembly);
         services.AddScoped<ITokenService, TokenService>();
+        services.AddHttpContextAccessor();
     }
 }

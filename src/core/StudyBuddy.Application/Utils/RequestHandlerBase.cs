@@ -10,7 +10,7 @@ public abstract class RequestHandlerBase<T1,T2> : IRequestHandler<T1, T2> where 
 
     public RequestHandlerBase(IHttpContextAccessor httpContextAccessor)
     {
-        UserId = httpContextAccessor.HttpContext.User.Claims.First(x => x.Type==ClaimTypes.NameIdentifier).Value;
+        UserId = httpContextAccessor.HttpContext?.User?.FindFirstValue(ClaimTypes.NameIdentifier);
     }
 
     public abstract Task<T2> Handle(T1 request, CancellationToken cancellationToken);

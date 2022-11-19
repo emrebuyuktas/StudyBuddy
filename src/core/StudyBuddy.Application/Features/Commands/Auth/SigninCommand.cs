@@ -17,25 +17,25 @@ public class SigninCommand : IRequest<Response<UserDto>>
     public string Password { get; set; }
 }
 
-public class SigninCommandHandler : RequestHandlerBase<SigninCommand, Response<UserDto>>
+public class SigninCommandHandler : IRequestHandler<SigninCommand, Response<UserDto>>
 {
     private readonly UserManager<AppUser> _userManager;
     private readonly ITokenService _tokenService;
     private readonly IDistributedCache _distributedCache;
 
-    public SigninCommandHandler(UserManager<AppUser> userManager, ITokenService tokenService, IDistributedCache distributedCache,
-        IHttpContextAccessor contextAccessor) : base(contextAccessor)
+    public SigninCommandHandler(UserManager<AppUser> userManager, ITokenService tokenService, IDistributedCache distributedCache)
     {
         _userManager = userManager;
         _tokenService = tokenService;
         _distributedCache = distributedCache;
     }
 
-    public override async Task<Response<UserDto>> Handle(SigninCommand request, CancellationToken cancellationToken)
+    public async Task<Response<UserDto>> Handle(SigninCommand request, CancellationToken cancellationToken)
     {
         var user =await  _userManager.FindByEmailAsync(request.Email);
-        if (user is null)
-            return Response<UserDto>.Fail("User not found", 404);
+        if (user is null || !await _userManager.CheckPasswordAsync(user, request.Password))
+            return Response<UserDto>.Fail("Email or password is incorrect", 404);
+        
         var token = _tokenService.CreateToken(user.Email, user.Id, user.UserName);
         var options = new DistributedCacheEntryOptions().SetSlidingExpiration(TimeSpan.FromMinutes(token.RefreshTokenExpiration));
         await _distributedCache.SetAsync($"id:{user.Id}",Encoding.UTF8.GetBytes(token.RefreshToken),options, cancellationToken);
