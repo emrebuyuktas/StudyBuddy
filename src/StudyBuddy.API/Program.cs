@@ -1,4 +1,5 @@
 using System.Text.Json.Serialization;
+using Microsoft.AspNetCore.Cors;
 using Microsoft.AspNetCore.Identity;
 using StudyBuddy.Application;
 using StudyBuddy.Application.Helpers;
@@ -14,7 +15,19 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllers().AddJsonOptions(x =>
 {
     x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
+    x.JsonSerializerOptions.PropertyNameCaseInsensitive = true;
 });
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+    });
+});
+
+
+
+
 builder.Services.AddInfrastructureServices(builder.Configuration);
 //builder.Services.AddHttpClient();
 builder.Services.AddIdentity<AppUser, IdentityRole>(options =>
@@ -41,7 +54,7 @@ app.UseSwaggerUI();
 
 
 app.UseHttpsRedirection();
-
+app.UseCors("CorsPolicy");
 app.UseAuthorization();
 
 app.MapControllers();

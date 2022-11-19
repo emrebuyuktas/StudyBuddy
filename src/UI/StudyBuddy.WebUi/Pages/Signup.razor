@@ -1,0 +1,52 @@
+﻿@page "/signup"
+
+@using StudyBuddy.WebUi.Models
+@using StudyBuddy.WebUi.Utils
+@using StudyBuddy.WebUi.Wrappers
+
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+
+            <EditForm Model="@_signupDto" OnValidSubmit="signUpProcess">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    <input @bind-value="_signupDto.Email" class="form-control form-control-lg" type="text" placeholder="E-Mail Address" />
+                </div>
+
+                <div class="form-group">
+                    <input @bind-value="_signupDto.UserName" class="form-control form-control-lg" type="text" placeholder="User Name" />
+                </div>
+                
+                <div class="form-group">
+                    <input @bind-value="_signupDto.Password" class="form-control form-control-lg" type="password" placeholder="Password" />
+                </div>
+                
+                <div class="form-group">
+                    <button class="btn btn-info btn-block">Login</button>
+                </div>
+
+            </EditForm>
+
+        </div>
+
+    </div>
+</div>
+
+@code {
+    
+    [Inject]
+    HttpClient Client { get; set; }
+    
+    private SignupDto  _signupDto = new ();
+
+    private async Task signUpProcess()
+    {
+        var httpRequest = await Client.PostGetServiceResponseAsync<Response<UserDto>,SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
+
+        Console.WriteLine(httpRequest.StatusCode == 201 ? "s" : "e");
+    }
+}

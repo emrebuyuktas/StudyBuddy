@@ -1,6 +1,6 @@
 ﻿using System.Text.Json.Serialization;
 
-namespace StudyBuddy.Application.Dtos;
+namespace StudyBuddy.WebUi.Models;
 
 public abstract class BaseDto
 {
