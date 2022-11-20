@@ -14,6 +14,5 @@ public static class ServiceRegistration
         services.AddAutoMapper(assembly);
         services.AddMediatR(assembly);
         services.AddScoped<ITokenService, TokenService>();
-        services.AddHttpContextAccessor();
     }
 }

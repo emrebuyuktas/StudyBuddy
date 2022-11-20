@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using StudyBuddy.Application.Features.Commands.Classroom;
 using StudyBuddy.Application.Features.Queries.Classroom;
@@ -8,6 +9,7 @@ namespace StudyBuddy.API.Controllers.Classroom
 {
     [Route("api/[controller]/[action]")]
     [ApiController]
+    [Authorize]
     public class ClassroomController : CustomBaseController
     {
         private readonly IMediator _mediator;

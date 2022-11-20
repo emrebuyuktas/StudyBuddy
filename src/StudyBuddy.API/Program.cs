@@ -40,6 +40,7 @@ builder.Services.AddApplicationServices();
 builder.Services.Configure<CustomTokenOption>(builder.Configuration.GetSection("TokenOption"));
 var tokenOptions = builder.Configuration.GetSection("TokenOption").Get<CustomTokenOption>();
 builder.Services.AddCustomTokenAuth(tokenOptions);
+builder.Services.AddHttpContextAccessor();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
