@@ -1,11 +1,10 @@
 ﻿@page "/login"
 
-
+@using StudyBuddy.WebUi.CustomComponents
 @using StudyBuddy.WebUi.Models
 @using StudyBuddy.WebUi.Utils
 @using StudyBuddy.WebUi.Wrappers
-
-
+@layout StudyBuddy.WebUi.Shared.EmptyLayout
 <div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
 
@@ -34,9 +33,12 @@
 </div>
 
 @code {
+    [CascadingParameter]
+    IModalService Modal { get; set; }
     
     [Inject]
     HttpClient Client { get; set; }
+    
     
     private UserLoginRequestDto _userLoginRequest = new UserLoginRequestDto();
 
@@ -44,6 +46,18 @@
     {
         var httpRequest = await Client.PostGetServiceResponseAsync<Response<UserDto>,UserLoginRequestDto>("https://localhost:7042/api/Auth/Signin", _userLoginRequest);
 
-        Console.WriteLine(httpRequest.StatusCode == 201 ? "s" : "e");
+        ModalParameters mPrams = new ModalParameters();
+        if (httpRequest.StatusCode == 201)
+        {
+            mPrams.Add("Message", "Giriş Başarılı");
+        }
+        else
+        {
+            mPrams.Add("Message", "Giriş Başarısız");
+
+        }
+        
+        Modal.Show<ShowMessagePopupComponent>("Login Page",mPrams);
+        
     }
 }

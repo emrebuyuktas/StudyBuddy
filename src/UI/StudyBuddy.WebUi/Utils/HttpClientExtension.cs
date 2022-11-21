@@ -11,7 +11,9 @@ namespace StudyBuddy.WebUi.Utils
         private static JsonSerializerOptions jsonSerilizerOptions = new JsonSerializerOptions
         {
             PropertyNameCaseInsensitive = true,
-            ReferenceHandler = ReferenceHandler.IgnoreCycles
+            ReferenceHandler = ReferenceHandler.IgnoreCycles,
+            DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
+            
         };
         public async static Task<Response<TResult>> PostGetServiceResponseAsync<TResult, TValue>(this HttpClient Client,
             String Url, TValue Value, bool ThrowSuccessException = false)
