@@ -12,6 +12,7 @@
           <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
           <TreatAsUsed>true</TreatAsUsed>
         </PackageReference>
+        <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="6.0.10" />
         <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />
     </ItemGroup>
 
@@ -22,6 +23,7 @@
     <ItemGroup>
       <Folder Include="Controllers\Auth" />
       <Folder Include="Controllers\Classroom" />
+      <Folder Include="Controllers\User" />
     </ItemGroup>
 
 </Project>
