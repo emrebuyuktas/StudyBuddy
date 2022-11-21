@@ -10,7 +10,7 @@ using StudyBuddy.Application.Wrappers;
 
 namespace StudyBuddy.API.Controllers.User
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     public class UserController : CustomBaseController
     {
