@@ -5,6 +5,7 @@ using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Interfaces;
 using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
+using StudyBuddy.Domain.Entities;
 using StudyBuddy.Domain.Entities.MongoDb;
 
 namespace StudyBuddy.Application.Features.Commands.Classroom;
