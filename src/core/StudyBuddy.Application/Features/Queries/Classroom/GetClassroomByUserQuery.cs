@@ -25,7 +25,7 @@ public class GetClassroomByUserQueryHandler : IRequestHandler<GetClassroomByUser
 
     public async Task<Response<ClassroomDto>> Handle(GetClassroomByUserQuery request, CancellationToken cancellationToken)
     {
-        var room =  await _dbContext.Classrooms.Where(x => x.Id.ToString() == request.classroomId).Include(x=>x.Messages).Include(x=>x.Tags).
+        var room =  await _dbContext.Classrooms.Where(x => x.Id.ToString() == request.classroomId).Include(x=>x.Messages).Include(x=>x.Tag).
             Include(x => x.Users).ThenInclude(x => x.AppUser).
             SingleOrDefaultAsync(cancellationToken: cancellationToken);
         
@@ -50,7 +50,7 @@ public class GetClassroomByUserQueryHandler : IRequestHandler<GetClassroomByUser
         {
             AppUsers = users,
             Messages = messages,
-            Tags = _mapper.Map<List<TagDto>>(room.Tags),
+            Tag = room.Tag,
             Id = room.Id,
             Name = room.Name
         },200);

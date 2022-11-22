@@ -53,7 +53,7 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
         {
             Id = classroom.Id,
             Name = classroom.Name,
-            Tags = _mapper.Map<List<TagDto>>(classroom.Tags),
+            Tag = classroom.Tag,
             AppUsers = userDtoList
 
         }, 200);

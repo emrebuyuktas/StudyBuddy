@@ -11,6 +11,7 @@ public class ClassroomConfiguration : IEntityTypeConfiguration<Classroom>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.Name).HasMaxLength(250);
+        builder.Property(x => x.Tag).HasConversion<int>();
         builder.HasMany<Message>(x => x.Messages).WithOne(x => x.Classroom).HasForeignKey(x => x.ClassroomId);
     }
 }

@@ -13,7 +13,6 @@ public class GeneralMapping : Profile
         CreateMap<SignupCommand, AppUser>();
         CreateMap<ClassroomDto, Classroom>().ReverseMap();
         CreateMap<MessageDto, Message>().ReverseMap();
-        CreateMap<TagDto, Tag>().ReverseMap();
         CreateMap<AppUser, UserDto>().ReverseMap();
         CreateMap<CreateClassroomCommand, Classroom>();
         
