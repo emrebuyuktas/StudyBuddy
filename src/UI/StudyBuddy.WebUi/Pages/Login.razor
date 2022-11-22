@@ -6,6 +6,8 @@
 @using StudyBuddy.WebUi.Wrappers
 @layout StudyBuddy.WebUi.Shared.EmptyLayout
 @using StudyBuddy.WebUi.Utils
+@using Blazored.LocalStorage
+@using System.Net.Http.Headers
 <div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
 
@@ -34,8 +36,7 @@
 </div>
 
 @code {
-    [CascadingParameter]
-    IModalService Modal { get; set; }
+
     
     [Inject]
     HttpClient Client { get; set; }
@@ -46,11 +47,17 @@
     [Inject]
     ModalManager ModalManager { get; set; }
     
+    [Inject]
+    ILocalStorageService localStorageService { get; set; }
+    
+    [Inject]
+    AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    
     private UserLoginRequestDto _userLoginRequest = new UserLoginRequestDto();
 
     private async Task loginProcess()
     {
-        var httpRequest = await Client.PostGetServiceResponseAsync<Response<UserDto>,UserLoginRequestDto>("https://localhost:7042/api/Auth/Signin", _userLoginRequest);
+        var httpRequest = await Client.PostGetServiceResponseAsync<UserDto,UserLoginRequestDto>("https://localhost:7042/api/Auth/Signin", _userLoginRequest);
 
         if (httpRequest is null)
         {
@@ -58,11 +65,16 @@
         }
         
         
-       else 
+       else
         {
+            await localStorageService.SetItemAsync("token",httpRequest.Data.accessToken);
+            await localStorageService.SetItemAsync("email",httpRequest.Data.email);
 
+            (AuthenticationStateProvider as AuthStateProvider).NotifyUserLogin(httpRequest.Data.email);
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data.accessToken);
+            
             NavManager.NavigateTo("/");
-            await ModalManager.ShowMessageAsync("Login Success", "Trueee" );
+            
 
             
             

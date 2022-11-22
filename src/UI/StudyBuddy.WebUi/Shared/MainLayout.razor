@@ -1,4 +1,6 @@
-﻿@inherits LayoutComponentBase
+﻿@using System.Security.Claims
+
+@inherits LayoutComponentBase
 
 <div class="page">
     <div class="sidebar">
@@ -6,8 +8,49 @@
     </div>
 
     <main>
+        
+            <div class="top-row px-4">
+                <a href="http://blazor.net" target="_blank" class="ml-md-auto">@logingStr</a>
+            </div>
+        
         <article class="content px-4">
             @Body
         </article>
     </main>
 </div>
+
+
+
+
+@code
+{
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    [Inject]
+    ILocalStorageService LocalStorageService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+
+    private String logingStr = "About";
+
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+    //authState.User.Claims.FirstOrDefault(i => i.ValueType == ClaimTypes.EMail);
+
+            logingStr = await LocalStorageService.GetItemAsStringAsync("email");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+}
+
+

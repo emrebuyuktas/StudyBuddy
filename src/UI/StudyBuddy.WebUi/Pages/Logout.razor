@@ -1,0 +1,31 @@
+﻿@page "/logout"
+@using StudyBuddy.WebUi.Utils
+@using System.Net.Http.Headers
+
+@code {
+    [Inject]
+    ILocalStorageService localStorageService { get; set; }
+    
+    [Inject]
+    AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    
+    [Inject]
+    HttpClient Client { get; set; }
+    
+    [Inject]
+    NavigationManager NavManager { get; set; }
+    
+    protected async override Task OnInitializedAsync()
+    {
+        await localStorageService.RemoveItemAsync("token");
+        await localStorageService.RemoveItemAsync("email");
+        
+        (AuthenticationStateProvider as AuthStateProvider).NotifyUserLogout("email");
+        Client.DefaultRequestHeaders.Authorization = null;
+        
+        NavManager.NavigateTo("/login");
+        
+        
+        
+    }
+}
