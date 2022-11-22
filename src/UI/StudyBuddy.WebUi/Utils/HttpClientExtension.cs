@@ -15,8 +15,8 @@ namespace StudyBuddy.WebUi.Utils
             DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull
             
         };
-        public async static Task<Response<TResult>> PostGetServiceResponseAsync<TResult, TValue>(this HttpClient Client,
-            String Url, TValue Value, bool ThrowSuccessException = false)
+        public static async Task<Response<TResult>> PostGetServiceResponseAsync<TResult, TValue>(this HttpClient Client,
+            String Url, TValue Value)
         {
             var httpRes = await Client.PostAsJsonAsync(Url, Value);
             var responseData = await httpRes.Content.ReadAsStringAsync();
@@ -32,20 +32,21 @@ namespace StudyBuddy.WebUi.Utils
         }
     
 
-    public async static Task<Response<TValue>> PostGetBaseResponseAsync<TValue>(this HttpClient Client, String Url, TValue Value, bool ThrowSuccessException = false)
+    public static async Task<Response<TValue>> PostGetBaseResponseAsync<TValue>(this HttpClient Client, String Url, TValue Value)
         {
             var httpRes = await Client.PostAsJsonAsync(Url, Value);
 
-            if (httpRes.IsSuccessStatusCode)
-            {
-                var res = await httpRes.Content.ReadFromJsonAsync<Response<TValue>>();
+            
+            
+                return await httpRes.Content.ReadFromJsonAsync<Response<TValue>>();
 
-            }
-            return null;
+            
+          
+            
         }
 
 
-        public async static Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url, bool ThrowSuccessException = false)
+        public async static Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url)
         {
             var httpRes = await Client.GetFromJsonAsync<Response<T>>(Url);
             return httpRes;

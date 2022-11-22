@@ -1,25 +1,46 @@
-﻿
-using Blazored.Modal;
+﻿using Blazored.Modal;
 using Blazored.Modal.Services;
 using StudyBuddy.WebUi.CustomComponents;
 
-namespace StudyBuddy.WebUi.Utils;
-
-public class ModalManager
+namespace StudyBuddy.WebUi.Utils
 {
-    private readonly IModalService modalService;
-
-    public ModalManager(IModalService ModalService)
+    public class ModalManager
     {
-        modalService = ModalService;
-    }
-    public async Task ShowMessageAsync(String Title, String Message)
-    {
-        ModalParameters mParams= new ModalParameters() ;
-        mParams.Add("Message", Message);
-        
-        var modalref= modalService.Show<ShowMessagePopupComponent>(Title,mParams);
+        private readonly IModalService modalService;
 
-        await modalref.Result;
+        public ModalManager(IModalService ModalService)
+        {
+            modalService = ModalService;
+        }
+
+
+
+
+        public async Task ShowMessageAsync(String Title, String Message, int Duration = 0)
+        {
+            ModalParameters mParams = new ModalParameters();
+            mParams.Add("Message", Message);
+
+            var modalRef = modalService.Show<ShowMessagePopupComponent>(Title, mParams);
+
+            if (Duration > 0)
+            {
+                await Task.Delay(Duration);
+                modalRef.Close();
+            }
+        }
+
+        public async Task<bool> ConfirmationAsync(String Title, String Message)
+        {
+            ModalParameters mParams = new ModalParameters();
+            mParams.Add("Message", Message);
+            
+            var modalRef = modalService.Show<ConfirmationPopupComponent>(Title, mParams);
+            var modalResult = await modalRef.Result;
+
+            return !modalResult.Cancelled;
+        }
+
+
     }
 }
