@@ -8,4 +8,8 @@ public class Response<T>
     public int StatusCode { get;  set; }
     public ErrorDto Error { get; set; }
     
+    public long? Take { get; set; }
+    public int? Page { get; set; }
+    public int? TotalPage { get; set; }
+    
 }

@@ -2,5 +2,7 @@
 
 public class ErrorDto
 {
-    public List<String> Errors { get; private set; } = new List<string>();
+    public List<string> Errors { get; set; } = new List<string>();
+
+
 }
