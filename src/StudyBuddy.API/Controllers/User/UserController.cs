@@ -29,7 +29,7 @@ namespace StudyBuddy.API.Controllers.User
         
         [Authorize]
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateUser(UpdateUserDto userDto) => 
-            ActionResult(await _mediator.Send(new UserProfileCommand(userDto.Name,userDto.Email)));
+        public async Task<IActionResult> UpdateUser(UserDto userDto) => 
+            ActionResult(await _mediator.Send(new UserProfileCommand(userDto.UserName,userDto.Email)));
     }
 }
