@@ -21,7 +21,7 @@ namespace StudyBuddy.API.Controllers.User
             _mediator = mediator;
         }
 
-        [HttpGet("all")]
-        public async Task<IActionResult> GetAllUsers() => ActionResult(await _mediator.Send(new AllUsersQuery()));
+        [HttpGet("all/{take}/{page}")]
+        public async Task<IActionResult> GetAllUsers(int take,int page) => ActionResult(await _mediator.Send(new AllUsersQuery(take,page)));
     }
 }

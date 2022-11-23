@@ -10,7 +10,14 @@ namespace StudyBuddy.Application.Features.Queries.User;
 
 public class AllUsersQuery : IRequest<Response<List<UserDto>>>
 {
-    
+    public int Take { get; }
+    public int Page { get; }
+
+    public AllUsersQuery(int take, int page)
+    {
+        Take = take;
+        Page = page;
+    }
 }
 
 public class AllUsersQueryHandler : IRequestHandler<AllUsersQuery, Response<List<UserDto>>>
@@ -26,8 +33,8 @@ public class AllUsersQueryHandler : IRequestHandler<AllUsersQuery, Response<List
 
     public  async Task<Response<List<UserDto>>> Handle(AllUsersQuery request, CancellationToken cancellationToken)
     {
-        var users = await _userManager.Users.ToListAsync(cancellationToken: cancellationToken);
+        var users = await _userManager.Users.Skip((request.Page - 1) * request.Take).Take(request.Take).ToListAsync(cancellationToken: cancellationToken);
         var userDtos = _mapper.Map<List<UserDto>>(users);
-        return Response<List<UserDto>>.Success(userDtos, 200);
+        return Response<List<UserDto>>.Success(userDtos, 200,request.Take,request.Page,users.Count);
     }
 }

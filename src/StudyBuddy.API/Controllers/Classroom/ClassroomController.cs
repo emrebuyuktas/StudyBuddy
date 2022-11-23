@@ -7,7 +7,7 @@ using StudyBuddy.Application.Wrappers;
 
 namespace StudyBuddy.API.Controllers.Classroom
 {
-    [Route("api/[controller]/[action]")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class ClassroomController : CustomBaseController
@@ -19,31 +19,35 @@ namespace StudyBuddy.API.Controllers.Classroom
             _mediator = mediator;
         }
         
-        [HttpPost]
+        [HttpPost("create")]
         public async Task<IActionResult> CreateClass(CreateClassroomCommand createClassroomCommand)
         {
             var result=await _mediator.Send(createClassroomCommand);
             return ActionResult(result);
         }
-        [HttpPost]
+        [HttpPost("join")]
         public async Task<IActionResult> JoinClass(JoinClassroomCommand joinClassroomCommand)
         {
             var result=await _mediator.Send(joinClassroomCommand);
             return ActionResult(result);
         }
 
-        [HttpGet("{userId}")]
+        [HttpGet("user/{userId}")]
         public async Task<IActionResult> GetClassroomsByUser(string userId)
         {
             var result = await _mediator.Send(new GetAllClassroomsByUserQuery { UserId = userId });
             return ActionResult(result);
         }
         
-        [HttpGet]
-        public async Task<IActionResult> GetClassroom(string classroomId,string userId)
+        [HttpGet("enter")]
+        public async Task<IActionResult> GetClassroom(string classroomId)
         {
-            var result = await _mediator.Send(new GetClassroomByUserQuery { classroomId =  classroomId, UserId = userId});
+            var result = await _mediator.Send(new GetClassroomByUserQuery { classroomId =  classroomId});
             return ActionResult(result);
         }
+
+        [HttpGet("search/{key}/{take}/{page}")]
+        public async Task<IActionResult> SearchClassroom(string key, int take, int page) =>
+            ActionResult(await _mediator.Send(new SearchClassroomQuery(take,page,key)));
     }
 }
