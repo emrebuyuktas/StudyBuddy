@@ -7,10 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Folder Include="Features\Commands\User" />
-  </ItemGroup>
-
-  <ItemGroup>
     <ProjectReference Include="..\StudyBuddy.Domain\StudyBuddy.Domain.csproj" />
   </ItemGroup>
 

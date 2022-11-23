@@ -5,6 +5,8 @@ using System.Threading.Tasks;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StudyBuddy.Application.Dtos;
+using StudyBuddy.Application.Features.Commands.User;
 using StudyBuddy.Application.Features.Queries.User;
 using StudyBuddy.Application.Wrappers;
 
@@ -23,5 +25,9 @@ namespace StudyBuddy.API.Controllers.User
 
         [HttpGet("all/{take}/{page}")]
         public async Task<IActionResult> GetAllUsers(int take,int page) => ActionResult(await _mediator.Send(new AllUsersQuery(take,page)));
+        
+        [HttpPost("update")]
+        public async Task<IActionResult> UpdateUser(UpdateUserDto userDto) => 
+            ActionResult(await _mediator.Send(new UserProfileCommand(userDto.Name,userDto.Email)));
     }
 }
