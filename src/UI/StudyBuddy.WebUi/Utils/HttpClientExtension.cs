@@ -1,6 +1,7 @@
 ﻿using System.Net.Http.Json;
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using StudyBuddy.WebUi.CustomException;
 using StudyBuddy.WebUi.Models;
 using StudyBuddy.WebUi.Wrappers;
 
@@ -21,14 +22,9 @@ namespace StudyBuddy.WebUi.Utils
             var httpRes = await Client.PostAsJsonAsync(Url, Value);
             var responseData = await httpRes.Content.ReadAsStringAsync();
             var res = JsonSerializer.Deserialize<Response<TResult>>(responseData,jsonSerilizerOptions);
-            if (res.StatusCode ==201)
-            {
+          
 
-                return res;
-
-            }
-
-            return null;
+            return res;
         }
     
 
@@ -46,11 +42,19 @@ namespace StudyBuddy.WebUi.Utils
         }
 
 
-        public async static Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url)
+        public async static Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url,bool throwWhenNotSuccess=false)
         {
+            
+            
             var httpRes = await Client.GetFromJsonAsync<Response<T>>(Url);
+            if (httpRes is null && throwWhenNotSuccess)
+            {
+                throw new ApiException(httpRes?.Error.Errors.First());
+            }
+
             return httpRes;
         }
+        
         
     }
 }

@@ -20,7 +20,7 @@
         await localStorageService.RemoveItemAsync("token");
         await localStorageService.RemoveItemAsync("email");
         
-        (AuthenticationStateProvider as AuthStateProvider).NotifyUserLogout("email");
+        (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogout("email");
         Client.DefaultRequestHeaders.Authorization = null;
         
         NavManager.NavigateTo("/login");

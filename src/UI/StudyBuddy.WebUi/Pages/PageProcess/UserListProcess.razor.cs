@@ -1,5 +1,6 @@
 ﻿using System.Net.Http.Json;
 using Microsoft.AspNetCore.Components;
+using StudyBuddy.WebUi.CustomException;
 using StudyBuddy.WebUi.Models;
 using StudyBuddy.WebUi.Utils;
 using StudyBuddy.WebUi.Wrappers;
@@ -11,6 +12,9 @@ public class UserListProcess_razor:ComponentBase
     [Inject]
     public HttpClient Client { get; set; }
 
+    [Inject] 
+    ModalManager ModalManager { get; set; }
+    
     protected List<UserDto> userList = new List<UserDto>();
 
     protected  override async Task OnInitializedAsync()
@@ -20,12 +24,21 @@ public class UserListProcess_razor:ComponentBase
 
     protected async Task LoadList()
     {
-        var serviceResponse = await Client.GetServiceResponseAsync<List<UserDto>>("https://localhost:7042/api/user/all");
-        if (serviceResponse.StatusCode==200)
+       
+        try
         {
-            userList = serviceResponse.Data;
-            
+           userList = (await Client.GetServiceResponseAsync<List<UserDto>>("https://localhost:7042/api/user/all/100/1", true)).Data;
 
+        }
+        catch (ApiException e)
+        {
+
+           await ModalManager.ShowMessageAsync("Api Exception", e.Message);
+        }
+        catch (Exception e)
+        {
+
+            await ModalManager.ShowMessageAsync("Exception", e.Message);
         }
     }
 }

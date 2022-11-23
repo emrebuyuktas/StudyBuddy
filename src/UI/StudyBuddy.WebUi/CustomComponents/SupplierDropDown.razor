@@ -1,0 +1,89 @@
+﻿@* @using StudyBuddy.WebUi.CustomException *@
+@* @using StudyBuddy.WebUi.Models *@
+@* @if (supplierList == null) *@
+@* { *@
+@*     <p> *@
+@*         <em> *@
+@*             @loadingMessage *@
+@*         </em> *@
+@*     </p> *@
+@* } *@
+@* else *@
+@* { *@
+@*     <BlazoredTypeahead SearchMethod="@searchSupplier" *@
+@*                        TValue="SupplierDTO" *@
+@*                        TItem="SupplierDTO" *@
+@*                        Value="selectedSupplier" *@
+@*                        ValueChanged="SelectedSupplierChanged" *@
+@*                        ValueExpression="@(() => selectedSupplier)" *@
+@*                        placeholder="Search by supplier name" *@
+@*                        ShowDropDownOnFocus="true" *@
+@*                        EnableDropDown="true" *@
+@*                        Debounce="500"> *@
+@*         <SelectedTemplate> *@
+@*             @context.Name *@
+@*         </SelectedTemplate> *@
+@*         <ResultTemplate> *@
+@*             @context.Name (@context.IsActive.ToString()) *@
+@*         </ResultTemplate> *@
+@*         <NotFoundTemplate> *@
+@*             Sorry, there weren't any search results. *@
+@*         </NotFoundTemplate> *@
+@*     </BlazoredTypeahead> *@
+@* } *@
+@* *@
+@* *@
+@* *@
+@* *@
+@* *@
+@* @code { *@
+@* *@
+@*     [Parameter] *@
+@*     public Guid Value { get; set; } *@
+@* *@
+@*     [Parameter] *@
+@*     public EventCallback<Guid> ValueChanged { get; set; } *@
+@* *@
+@*     [Inject] *@
+@*     HttpClient Client { get; set; } *@
+@* *@
+@*     List<ClassroomDto> supplierList; *@
+@*     ClassroomDto selectedSupplier = new ClassroomDto(); *@
+@* *@
+@*     String loadingMessage = "Loading..."; *@
+@* *@
+@*     protected async override Task OnInitializedAsync() *@
+@*     { *@
+@*         try *@
+@*         { *@
+@*             supplierList = await Client.GetServiceResponseAsync<List<ClassroomDto>>("api/Supplier/Suppliers"); *@
+@* *@
+@*             if (!Value.IsNull()) *@
+@*                 selectedSupplier = supplierList.FirstOrDefault(i => i.Id == Value); *@
+@* *@
+@*         } *@
+@*         catch (ApiException) *@
+@*         { *@
+@*             loadingMessage = "Loading Error"; *@
+@*         } *@
+@*     } *@
+@* *@
+@*     private Task SelectedSupplierChanged(ClassroomDto Supplier) *@
+@*     { *@
+@*         if (Supplier == null) *@
+@*         { *@
+@*             return ValueChanged.InvokeAsync(Guid.Empty); *@
+@*         } *@
+@* *@
+@*         selectedSupplier = Supplier; *@
+@*         Value = Supplier.Id; *@
+@* *@
+@*         return ValueChanged.InvokeAsync(Supplier.Id); *@
+@*     } *@
+@* *@
+@* *@
+@*     async Task<IEnumerable<ClassroomDto>> searchSupplier(String searchText) *@
+@*     { *@
+@*         return await Task.FromResult(supplierList.Where(i => i.Name.ToUpper().Contains(searchText.ToUpper())).ToList()); *@
+@*     } *@
+@* } *@

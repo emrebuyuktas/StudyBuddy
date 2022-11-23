@@ -45,7 +45,7 @@
 
     private async Task signUpProcess()
     {
-        var httpRequest = await Client.PostGetServiceResponseAsync<Response<UserDto>,SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
+        var httpRequest = await Client.PostGetServiceResponseAsync<UserDto,SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
 
         Console.WriteLine(httpRequest.StatusCode == 201 ? "s" : "e");
     }

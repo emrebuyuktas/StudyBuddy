@@ -10,7 +10,7 @@
     <main>
         
             <div class="top-row px-4">
-                <a href="http://blazor.net" target="_blank" class="ml-md-auto">@logingStr</a>
+                <a href="http://blazor.net" target="_blank" class="ml-md-auto">@name</a>
             </div>
         
         <article class="content px-4">
@@ -34,7 +34,7 @@
     NavigationManager NavigationManager { get; set; }
 
     private String logingStr = "About";
-
+    private String name = "About";
 
     protected async override Task OnInitializedAsync()
     {
@@ -44,6 +44,7 @@
         {
     //authState.User.Claims.FirstOrDefault(i => i.ValueType == ClaimTypes.EMail);
 
+            name = await LocalStorageService.GetItemAsStringAsync("userName");
             logingStr = await LocalStorageService.GetItemAsStringAsync("email");
         }
         else

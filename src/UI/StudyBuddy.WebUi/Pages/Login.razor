@@ -1,19 +1,17 @@
 ﻿@page "/login"
 
-@using StudyBuddy.WebUi.CustomComponents
+
 @using StudyBuddy.WebUi.Models
-@using StudyBuddy.WebUi.Utils
-@using StudyBuddy.WebUi.Wrappers
-@layout StudyBuddy.WebUi.Shared.EmptyLayout
-@using StudyBuddy.WebUi.Utils
-@using Blazored.LocalStorage
+
+@layout EmptyLayout
+
 @using System.Net.Http.Headers
 <div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
 
         <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
 
-            <EditForm Model="@_userLoginRequest" OnValidSubmit="loginProcess">
+            <EditForm Model="@_userLoginRequest" OnValidSubmit="LoginProcess">
                 <DataAnnotationsValidator />
 
                 <div class="form-group">
@@ -39,41 +37,45 @@
 
     
     [Inject]
-    HttpClient Client { get; set; }
+    HttpClient? Client { get; set; }
     
     [Inject]
-    NavigationManager NavManager { get; set; }
+    NavigationManager? NavManager { get; set; }
     
     [Inject]
-    ModalManager ModalManager { get; set; }
+    ModalManager? ModalManager { get; set; }
     
     [Inject]
-    ILocalStorageService localStorageService { get; set; }
+    ILocalStorageService? LocalStorageService { get; set; }
     
     [Inject]
-    AuthenticationStateProvider AuthenticationStateProvider { get; set; }
+    AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
     
     private UserLoginRequestDto _userLoginRequest = new UserLoginRequestDto();
 
-    private async Task loginProcess()
+    private async Task LoginProcess()
     {
         var httpRequest = await Client.PostGetServiceResponseAsync<UserDto,UserLoginRequestDto>("https://localhost:7042/api/Auth/Signin", _userLoginRequest);
 
-        if (httpRequest is null)
+        if (httpRequest.StatusCode!=201)
         {
-            await ModalManager.ShowMessageAsync("Login Error", "False" );
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First() )!;
         }
         
         
        else
         {
-            await localStorageService.SetItemAsync("token",httpRequest.Data.accessToken);
-            await localStorageService.SetItemAsync("email",httpRequest.Data.email);
+            if (LocalStorageService != null)
+            {
+                await LocalStorageService.SetItemAsync("token", httpRequest.Data?.accessToken);
+                await LocalStorageService.SetItemAsync("email", httpRequest.Data?.email);
+                await LocalStorageService.SetItemAsync("userName", httpRequest.Data?.userName);
+            }
 
-            (AuthenticationStateProvider as AuthStateProvider).NotifyUserLogin(httpRequest.Data.email);
-            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data.accessToken);
+            (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogin(httpRequest.Data?.email!);
+            Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
             
-            NavManager.NavigateTo("/");
+            NavManager?.NavigateTo("/");
             
 
             

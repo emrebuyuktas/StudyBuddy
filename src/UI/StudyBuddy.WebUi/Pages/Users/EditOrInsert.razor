@@ -1,0 +1,126 @@
+﻿@page "/profile"
+
+@using StudyBuddy.WebUi.Models
+@using StudyBuddy.WebUi.Wrappers
+@using Microsoft.AspNetCore.Components
+@using StudyBuddy.WebUi.CustomException
+@using StudyBuddy.WebUi.CustomComponents.Buttons
+@using System.Net.Http.Headers
+
+<div class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+
+            <EditForm Model="@_updateUser" OnValidSubmit="editOrUpdate">
+                <DataAnnotationsValidator />
+
+                <div class="form-group">
+                    <input @bind-value="_updateUser.Name" class="form-control form-control-lg" type="text" placeholder=@name />
+                </div>
+
+                <div class="form-group">
+                    <input @bind-value="_updateUser.Email" class="form-control form-control-lg" type="text" placeholder=@email />
+                </div>
+                
+
+                <div class="form-group">
+                    
+                    <button class="btn btn-info btn-block">Save</button>
+
+                </div>
+
+            </EditForm>
+            
+
+        </div>
+
+    </div>
+</div>
+
+<div>
+    <text>@token</text>
+</div>
+@code {
+
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
+
+    [Inject]
+    ILocalStorageService LocalStorageService { get; set; }
+
+    [Inject]
+    NavigationManager NavigationManager { get; set; }
+    
+    [Inject]
+    HttpClient? Client { get; set; }
+    
+    [Inject]
+    NavigationManager? NavManager { get; set; }
+    
+    [Inject]
+    ModalManager? ModalManager { get; set; }
+
+    [Inject]
+    AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+    
+   
+    private UpdateUserDto _updateUser = new UpdateUserDto();
+    private String name = "name";
+    private String email = "mail";
+    private String token = "token";
+    
+
+    protected async override Task OnInitializedAsync()
+    {
+        var authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
+        {
+   
+
+            name = await LocalStorageService.GetItemAsStringAsync("userName");
+            email = await LocalStorageService.GetItemAsStringAsync("email");
+            token= await LocalStorageService.GetItemAsStringAsync("token");
+        }
+        else
+        {
+            NavigationManager.NavigateTo("/login");
+        }
+    }
+    
+    async Task editOrUpdate()
+    {
+        
+        var httpRequest = await Client.PostGetServiceResponseAsync<UserDto,UpdateUserDto>("https://localhost:7042/api/user/update",_updateUser);
+
+        if (httpRequest.StatusCode!=201)
+        {
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First() )!;
+        }
+        
+        
+        else
+        {
+            if (LocalStorageService != null)
+            {
+                await LocalStorageService.SetItemAsync("token", httpRequest.Data?.accessToken);
+                await LocalStorageService.SetItemAsync("email", httpRequest.Data?.email);
+                await LocalStorageService.SetItemAsync("userName", httpRequest.Data?.userName);
+            }
+
+            (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogin(httpRequest.Data?.email!);
+            Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
+            
+            NavManager?.NavigateTo("/profile");
+            
+
+            
+            
+        }
+    }
+
+
+}
+
+
