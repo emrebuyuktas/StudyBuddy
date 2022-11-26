@@ -27,14 +27,20 @@
                 </div>
 
             </EditForm>
-
+            <br/>
+        <button class="btn btn-primary" @onclick="IncrementCount">SignUp</button>
         </div>
-
+        
     </div>
+    
 </div>
 
 @code {
-
+    
+    private async Task IncrementCount()
+    {
+        NavManager?.NavigateTo("/signup");
+    }
     
     [Inject]
     HttpClient? Client { get; set; }

@@ -1,7 +1,8 @@
 ﻿@using StudyBuddy.WebUi.Models
 @using StudyBuddy.WebUi.CustomException
 @using Blazored.Typeahead
-@if (userList == null)
+@using StudyBuddy.Application.Dtos
+@if (classroomList == null)
 {
     <p>
         <em>
@@ -12,8 +13,8 @@
 else
 {
     <BlazoredTypeahead SearchMethod="@searchUserlist"
-                       TValue="UserDto"
-                       TItem="UserDto"
+                       TValue="ClassroomListDto"
+                       TItem="ClassroomListDto"
                        Value="selectedUser"
                        ValueChanged="selectedUserChanged"
                        placeholder="Search by user name"
@@ -22,10 +23,10 @@ else
                        Debounce="500"
     >
         <SelectedTemplate>
-            @context.userName
+            @context.Name
         </SelectedTemplate>
         <ResultTemplate>
-            @context.userName (@context.email)
+            @context.Name (@context.Tags)
         </ResultTemplate>
     </BlazoredTypeahead>
 
@@ -44,14 +45,14 @@ else
     [Inject]
     HttpClient Client { get; set; }
 
-    List<UserDto> userList;
-    UserDto selectedUser = new UserDto();
+    List<ClassroomListDto> classroomList;
+    ClassroomListDto selectedUser = new ClassroomListDto();
     String _loadingMessage = "Loading";
     protected override async void OnInitialized()
     {
         try
         {
-            userList = (await Client.GetServiceResponseAsync<List<UserDto>>("https://localhost:7042/api/user/all/100/1", true)).Data!;
+            classroomList = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/classroom/related", true)).Data!;
 
         }
         catch (ApiException e)
@@ -62,20 +63,20 @@ else
         }
     }
 
-    private Task selectedUserChanged(UserDto Users)
+    private Task selectedUserChanged(ClassroomListDto Class)
     {
-        if (Users == null)
+        if (Class == null)
         {
             return ValueChanged.InvokeAsync(Guid.Empty);
         }
-        selectedUser = Users;
-        Value = Users.Id;
-        return ValueChanged.InvokeAsync(Users.Id);
+        selectedUser = Class;
+        Value = Class.Id;
+        return ValueChanged.InvokeAsync(Class.Id);
     }
 
-    async Task<IEnumerable<UserDto>> searchUserlist(String searchText)
+    async Task<IEnumerable<ClassroomListDto>> searchUserlist(String searchText)
     {
-        return await Task.FromResult(userList.Where(i => i.userName.ToUpper().Contains(searchText.ToUpper())).ToList());
+        return await Task.FromResult(classroomList.Where(i => i.Name.ToUpper().Contains(searchText.ToUpper())).ToList());
     }
     
 

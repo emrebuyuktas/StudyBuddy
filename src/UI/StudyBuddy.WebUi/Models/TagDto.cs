@@ -4,5 +4,6 @@ namespace StudyBuddy.WebUi.Models;
 
 public class TagDto
 {
-    [JsonPropertyName("n")]public string Name { get; set; }
+    public string Id { get; set; }
+    public string Name { get; set; }
 }
