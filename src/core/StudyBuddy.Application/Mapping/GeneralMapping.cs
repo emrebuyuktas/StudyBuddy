@@ -14,6 +14,7 @@ public class GeneralMapping : Profile
         CreateMap<ClassroomDto, Classroom>().ReverseMap();
         CreateMap<MessageDto, Message>().ReverseMap();
         CreateMap<AppUser, UserDto>().ReverseMap();
+        CreateMap<TagDto, Tag>().ReverseMap();
         CreateMap<CreateClassroomCommand, Classroom>();
         
         // CreateMap<AppUser,UserClassroomDto>().ForMember(x=>x.ClassroomName, 

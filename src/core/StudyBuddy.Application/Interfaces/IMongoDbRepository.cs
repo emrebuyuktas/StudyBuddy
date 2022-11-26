@@ -10,4 +10,6 @@ public interface IMongoDbRepository<T> where T: class
     Task UpdateOneAsync(string id, T document);
     Task UpdateOneAsync(string id, Func<UpdateDefinitionBuilder<T>, UpdateDefinition<T>> update);
     Task DeleteOneAsync(string id);
+    IQueryable<T> AsQueryable();
+    public IMongoCollection<T> Collection();
 }

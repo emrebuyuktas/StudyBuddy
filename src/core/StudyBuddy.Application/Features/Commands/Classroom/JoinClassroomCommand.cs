@@ -8,13 +8,13 @@ using StudyBuddy.Application.Interfaces;
 using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
 using StudyBuddy.Domain.Entities;
+using StudyBuddy.Domain.Entities.MongoDb;
 
 namespace StudyBuddy.Application.Features.Commands.Classroom;
 
 public class JoinClassroomCommand : IRequest<Response<ClassroomDto>>
 {
     public Guid ClassroomId { get; set; }
-    public string UserId { get; set; }
 }
 
 public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomCommand, Response<ClassroomDto>>
@@ -31,9 +31,9 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
 
     public override async Task<Response<ClassroomDto>> Handle(JoinClassroomCommand request, CancellationToken cancellationToken)
     {
-        var user = await _userManager.FindByIdAsync(request.UserId);
+        var user = await _userManager.FindByIdAsync(UserId);
         var classroom = await _dbContext.Classrooms.Where(x => x.Id == request.ClassroomId).Include(x=>x.Users)
-            .Include(x=>x.Messages).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            .Include(x=>x.Messages).Include(x=>x.Tags).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (user is null || classroom is null)
             return Response<ClassroomDto>.Fail("Something went wrong", 404);
         classroom.Users.Add(new UserClassroom
@@ -53,7 +53,7 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
         {
             Id = classroom.Id,
             Name = classroom.Name,
-            Tag = classroom.Tag,
+            Tag = _mapper.Map<List<TagDto>>(classroom.Tags),
             AppUsers = userDtoList
 
         }, 200);

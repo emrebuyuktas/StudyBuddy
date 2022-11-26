@@ -22,6 +22,36 @@ namespace StudyBuddy.Persistence.Migrations
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder, 1L, 1);
 
+            modelBuilder.Entity("AppUserTag", b =>
+                {
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("UsersId")
+                        .HasColumnType("nvarchar(450)");
+
+                    b.HasKey("TagsId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("AppUserTag");
+                });
+
+            modelBuilder.Entity("ClassroomTag", b =>
+                {
+                    b.Property<Guid>("ClassroomsId")
+                        .HasColumnType("uniqueidentifier");
+
+                    b.Property<int>("TagsId")
+                        .HasColumnType("int");
+
+                    b.HasKey("ClassroomsId", "TagsId");
+
+                    b.HasIndex("TagsId");
+
+                    b.ToTable("ClassroomTag");
+                });
+
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
                 {
                     b.Property<string>("Id")
@@ -231,9 +261,6 @@ namespace StudyBuddy.Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
-                    b.Property<int>("Tag")
-                        .HasColumnType("int");
-
                     b.HasKey("Id");
 
                     b.ToTable("Classrooms");
@@ -269,6 +296,20 @@ namespace StudyBuddy.Persistence.Migrations
                     b.ToTable("Messages");
                 });
 
+            modelBuilder.Entity("StudyBuddy.Domain.Entities.Tag", b =>
+                {
+                    b.Property<int>("Id")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Tags");
+                });
+
             modelBuilder.Entity("StudyBuddy.Domain.Entities.UserClassroom", b =>
                 {
                     b.Property<Guid>("ClassroomId")
@@ -285,6 +326,36 @@ namespace StudyBuddy.Persistence.Migrations
                     b.HasIndex("UserId");
 
                     b.ToTable("UserClassrooms");
+                });
+
+            modelBuilder.Entity("AppUserTag", b =>
+                {
+                    b.HasOne("StudyBuddy.Domain.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudyBuddy.Domain.Entities.AppUser", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("ClassroomTag", b =>
+                {
+                    b.HasOne("StudyBuddy.Domain.Entities.Classroom", null)
+                        .WithMany()
+                        .HasForeignKey("ClassroomsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("StudyBuddy.Domain.Entities.Tag", null)
+                        .WithMany()
+                        .HasForeignKey("TagsId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>

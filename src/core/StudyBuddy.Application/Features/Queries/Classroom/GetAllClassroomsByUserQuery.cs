@@ -1,33 +1,38 @@
-﻿using MediatR;
+﻿using AutoMapper;
+using MediatR;
+using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Interfaces;
+using StudyBuddy.Application.Utils;
 using StudyBuddy.Application.Wrappers;
 
 namespace StudyBuddy.Application.Features.Queries.Classroom;
 
 public class GetAllClassroomsByUserQuery : IRequest<Response<List<UserClassroomDto>>>
 {
-    public string UserId { get; set; }
 }
 
-public class GetAllClassroomsByUserQueryHandler : IRequestHandler<GetAllClassroomsByUserQuery, Response<List<UserClassroomDto>>>
+public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClassroomsByUserQuery, Response<List<UserClassroomDto>>>
 {
 
     private readonly IApplicationDbContext _dbContext;
-    public GetAllClassroomsByUserQueryHandler(IApplicationDbContext dbContext)
+    private readonly IMapper _mapper;
+    public GetAllClassroomsByUserQueryHandler(IHttpContextAccessor httpContextAccessor, IApplicationDbContext dbContext, IMapper mapper) : base(httpContextAccessor)
     {
         _dbContext = dbContext;
+        _mapper = mapper;
     }
 
-    public async Task<Response<List<UserClassroomDto>>> Handle(GetAllClassroomsByUserQuery request, CancellationToken cancellationToken)
+    public override async Task<Response<List<UserClassroomDto>>> Handle(GetAllClassroomsByUserQuery request, CancellationToken cancellationToken)
     {
-        var rooms = ( _dbContext.UserClassrooms.Where(x => x.UserId == request.UserId).
-                Include(x => x.Classroom).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
+        var rooms = ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
+            Include(x => x.Classroom).ThenInclude(y=>y.Tags).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
         {
             UserName = x.AppUser.UserName,
-            ClassroomName = x.Classroom.Name
+            ClassroomName = x.Classroom.Name,
+            Tags = _mapper.Map<List<TagDto>>(x.Classroom.Tags)
         });
-        return  Response<List<UserClassroomDto>>.Success(await rooms.ToListAsync(cancellationToken: cancellationToken),200);
+        return Response<List<UserClassroomDto>>.Success(await rooms.ToListAsync(cancellationToken: cancellationToken),200);
     }
 }

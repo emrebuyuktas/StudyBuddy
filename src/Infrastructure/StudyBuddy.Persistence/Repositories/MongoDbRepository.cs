@@ -22,7 +22,15 @@ public class MongoDbRepository<T> : IMongoDbRepository<T> where T:class
                 true)
             .FirstOrDefault())?.CollectionName;
     }
-    
+
+    public IMongoCollection<T> Collection()
+    {
+        return _collection;
+    }
+    public IQueryable<T> AsQueryable()
+    {
+        return _collection.AsQueryable();
+    }
     public  async Task<T> GetAsync(string id)
     {
         var cursor = await _collection.FindAsync(Builders<T>.Filter.Eq("_id", id));

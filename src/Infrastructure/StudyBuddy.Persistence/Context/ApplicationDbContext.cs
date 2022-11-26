@@ -24,6 +24,8 @@ public class ApplicationDbContext:  IdentityDbContext<AppUser, IdentityRole, str
     public DbSet<AppUser> AppUsers { get; set; }
     public DbSet<Message> Messages { get; set; }
     public DbSet<UserClassroom> UserClassrooms { get; set; }
+    public DbSet<Tag> Tags { get; set; }
+
     public async Task SaveChangesAsync()
     {
         await base.SaveChangesAsync();

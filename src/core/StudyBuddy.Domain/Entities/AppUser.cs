@@ -12,5 +12,6 @@ namespace StudyBuddy.Domain.Entities
         //public virtual List<Classroom> Classrooms { get; set; }
         public ICollection<UserClassroom> Classrooms { get; set; }
         public List<Message> Messages { get; set; }
+        public List<Tag> Tags { get; set; }
     }
 }

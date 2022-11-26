@@ -10,6 +10,8 @@ using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Features.Commands.User;
 using StudyBuddy.Application.Features.Queries.User;
 using StudyBuddy.Application.Wrappers;
+using StudyBuddy.Domain.Entities;
+using StudyBuddy.Domain.Entities.MongoDb;
 
 namespace StudyBuddy.API.Controllers.User
 {
@@ -29,7 +31,12 @@ namespace StudyBuddy.API.Controllers.User
         
         [Authorize]
         [HttpPost("update")]
-        public async Task<IActionResult> UpdateUser(UserDto userDto) => 
-            ActionResult(await _mediator.Send(new UserProfileCommand(userDto.UserName,userDto.Email)));
+        public async Task<IActionResult> UpdateUser(UpdateUserDto userDto) => 
+            ActionResult(await _mediator.Send(new UserProfileCommand(userDto.Name,userDto.Email)));
+        
+        [Authorize]
+        [HttpPost("tag")]
+        public async Task<IActionResult> AddTagsToUser(List<Tags> tagsList) => ActionResult(await _mediator.Send(new
+            AddTagToUserCommand(tagsList)));
     }
 }

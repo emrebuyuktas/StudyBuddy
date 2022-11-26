@@ -27,14 +27,13 @@ public class GetClassroomByUserQueryHandler : RequestHandlerBase<GetClassroomByU
 
     public override async Task<Response<ClassroomDto>> Handle(GetClassroomByUserQuery request, CancellationToken cancellationToken)
     {
-        var room =  await _dbContext.Classrooms.Where(x => x.Id.ToString() == request.classroomId).Include(x=>x.Messages).Include(x=>x.Tag).
-            Include(x => x.Users).ThenInclude(x => x.AppUser).
+        var room =  await _dbContext.Classrooms.Where(x => x.Id.ToString() == request.classroomId).
+            Include(x=>x.Messages).Include(x => x.Users).ThenInclude(x => x.AppUser).
             SingleOrDefaultAsync(cancellationToken: cancellationToken);
         
         
         var users = new List<UserDto>();
         var joinDate = room.Users.ToList().Find(x => x.UserId == UserId)!.JoinDate;
-        var test = room.Users.ToList();
         room.Users.ToList().ForEach(x =>
         {
             var mapped = _mapper.Map<UserDto>(x.AppUser);
@@ -50,7 +49,7 @@ public class GetClassroomByUserQueryHandler : RequestHandlerBase<GetClassroomByU
         {
             AppUsers = users,
             Messages = messages,
-            Tag = room.Tag,
+            Tag = _mapper.Map<List<TagDto>>(room.Tags),
             Id = room.Id,
             Name = room.Name
         },200);

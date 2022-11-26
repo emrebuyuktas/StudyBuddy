@@ -74,14 +74,15 @@
     protected async override Task OnInitializedAsync()
     {
         var authState = await AuthState;
+        
 
         if (authState.User.Identity.IsAuthenticated)
         {
    
 
-            name = await LocalStorageService.GetItemAsStringAsync("userName");
-            email = await LocalStorageService.GetItemAsStringAsync("email");
-            token= await LocalStorageService.GetItemAsStringAsync("token");
+            name = await LocalStorageService.GetItemAsync<string>("userName");
+            email = await LocalStorageService.GetItemAsync<string>("email");
+            token= await LocalStorageService.GetItemAsync<string>("token");
         }
         else
         {
