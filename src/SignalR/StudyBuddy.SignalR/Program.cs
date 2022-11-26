@@ -1,10 +1,22 @@
+using StudyBuddy.SignalR;
+using StudyBuddy.SignalR.Hubs;
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
 builder.Services.AddControllers();
+builder.Services.AddSignalRServices(builder.Configuration);
+builder.Services.AddSignalR();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddCors(opt =>
+{
+    opt.AddPolicy("CorsPolicy", builder =>
+    {
+        builder.WithOrigins("https://localhost:7196",";http://localhost:5196","https://localhost:7042").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+    });
+});
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
@@ -17,9 +29,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
+app.UseRouting();
+app.UseCors("CorsPolicy");
+app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseEndpoints(enpoints =>
+{
+    enpoints.MapHub<Classroom>("/Clasroom");
+    enpoints.MapControllers();
+});
 
 app.Run();

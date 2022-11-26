@@ -16,7 +16,7 @@ namespace StudyBuddy.Application.Features.Commands.Classroom;
 public class CreateClassroomCommand : IRequest<Response<ClassroomDto>>
 {
     public string Name { get; set; }
-    public List<Tags> Tags { get; set; }
+    public List<TagDto> Tags { get; set; }
 }
 
 public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomCommand, Response<ClassroomDto>>
@@ -34,7 +34,7 @@ public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomC
     public override async Task<Response<ClassroomDto>> Handle(CreateClassroomCommand request, CancellationToken cancellationToken)
     {
         var classroom = new Domain.Entities.Classroom{Name = request.Name};
-        classroom.Tags = await _dbContext.Tags.Where(x=>request.Tags.Contains((Tags)x.Id)).ToListAsync(cancellationToken: cancellationToken);
+        classroom.Tags = await _dbContext.Tags.Where(x => request.Tags.Select(y=>y.Id).Contains(x.Id)).ToListAsync(cancellationToken: cancellationToken);
         var result = await _dbContext.Classrooms.AddAsync(classroom, cancellationToken);
         await _dbContext.SaveChangesAsync();
         await _moderatorRepo.InsertOneAsync(new Moderator { Id = classroom.Id.ToString().ToModeratorId(UserId)});

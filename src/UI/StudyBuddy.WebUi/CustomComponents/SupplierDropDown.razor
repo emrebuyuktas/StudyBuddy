@@ -1,83 +1,93 @@
-﻿@using StudyBuddy.WebUi.Models
-@using StudyBuddy.WebUi.CustomException
-@using Blazored.Typeahead
-@using StudyBuddy.Application.Dtos
-@if (classroomList == null)
+﻿@page "/"
+@using StudyBuddy.WebUi.Models
+@inject Blazored.LocalStorage.ILocalStorageService localStorage
+
+@if (supplierList == null)
 {
     <p>
         <em>
-            @_loadingMessage
+            @loadingMessage
         </em>
     </p>
 }
 else
 {
-    <BlazoredTypeahead SearchMethod="@searchUserlist"
-                       TValue="ClassroomListDto"
-                       TItem="ClassroomListDto"
-                       Value="selectedUser"
-                       ValueChanged="selectedUserChanged"
-                       placeholder="Search by user name"
+    <BlazoredTypeahead SearchMethod="@searchSupplier"
+                       TValue="TagDto"
+                       TItem="TagDto"
+                       Value="selectedSupplier"
+                       ValueChanged="SelectedSupplierChanged"
+                       placeholder="Search by supplier name"
                        ShowDropDownOnFocus="true"
                        EnableDropDown="true"
-                       Debounce="500"
-    >
+                       Debounce="500">
         <SelectedTemplate>
             @context.Name
         </SelectedTemplate>
         <ResultTemplate>
-            @context.Name (@context.Tags)
+            @context.Name)
         </ResultTemplate>
+        <NotFoundTemplate>
+            Sorry, there weren't any search results.
+        </NotFoundTemplate>
     </BlazoredTypeahead>
-
 }
 
 
 
-@code
-{
+
+
+@code {
 
     [Parameter]
-    public Guid Value { get; set; }
+    public string Value { get; set; }
+
     [Parameter]
-    public EventCallback<Guid> ValueChanged { get; set; }
+    public EventCallback<string> ValueChanged { get; set; }
 
     [Inject]
     HttpClient Client { get; set; }
 
-    List<ClassroomListDto> classroomList;
-    ClassroomListDto selectedUser = new ClassroomListDto();
-    String _loadingMessage = "Loading";
-    protected override async void OnInitialized()
+    List<TagDto> supplierList;
+    TagDto selectedSupplier = new ();
+
+    String loadingMessage = "Loading...";
+
+    protected override async Task OnInitializedAsync()
     {
-        try
+        var res = (await Client.GetServiceResponseAsync<List<TagDto>>("https://localhost:7042/api/Tag/all", true));
+        if (res.StatusCode != 200)
         {
-            classroomList = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/classroom/related", true)).Data!;
-
+            Console.WriteLine(res.Error.Errors.First());
         }
-        catch (ApiException e)
+        else
         {
-
-            _loadingMessage = "Loading Errror";
-            
+            supplierList = res.Data;
+            foreach (var item in res.Data)
+            {
+                Console.WriteLine(item.Name);
+            }
         }
     }
 
-    private Task selectedUserChanged(ClassroomListDto Class)
+    private Task SelectedSupplierChanged(TagDto tag)
     {
-        if (Class == null)
+        if (tag == null)
         {
-            return ValueChanged.InvokeAsync(Guid.Empty);
+            return ValueChanged.InvokeAsync(string.Empty);
         }
-        selectedUser = Class;
-        Value = Class.Id;
-        return ValueChanged.InvokeAsync(Class.Id);
+
+        selectedSupplier = tag;
+        Value = tag.Name;
+
+        return ValueChanged.InvokeAsync(tag.Name);
     }
 
-    async Task<IEnumerable<ClassroomListDto>> searchUserlist(String searchText)
+
+    async Task<IEnumerable<TagDto>> searchSupplier(String searchText)
     {
-        return await Task.FromResult(classroomList.Where(i => i.Name.ToUpper().Contains(searchText.ToUpper())).ToList());
+        return await Task.FromResult(supplierList.Where(i => i.Name.ToUpper().Contains(searchText.ToUpper())).ToList());
     }
-    
-
 }
+
+  

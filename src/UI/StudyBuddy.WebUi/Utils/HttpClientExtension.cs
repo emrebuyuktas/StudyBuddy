@@ -42,7 +42,7 @@ namespace StudyBuddy.WebUi.Utils
         }
 
 
-        public async static Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url,bool throwWhenNotSuccess=false)
+        public static async Task<Response<T>> GetServiceResponseAsync<T>(this HttpClient Client, String Url,bool throwWhenNotSuccess=false)
         {
             
             
