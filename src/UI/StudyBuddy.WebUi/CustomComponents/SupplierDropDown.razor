@@ -1,89 +1,82 @@
-﻿@* @using StudyBuddy.WebUi.CustomException *@
-@* @using StudyBuddy.WebUi.Models *@
-@* @if (supplierList == null) *@
-@* { *@
-@*     <p> *@
-@*         <em> *@
-@*             @loadingMessage *@
-@*         </em> *@
-@*     </p> *@
-@* } *@
-@* else *@
-@* { *@
-@*     <BlazoredTypeahead SearchMethod="@searchSupplier" *@
-@*                        TValue="SupplierDTO" *@
-@*                        TItem="SupplierDTO" *@
-@*                        Value="selectedSupplier" *@
-@*                        ValueChanged="SelectedSupplierChanged" *@
-@*                        ValueExpression="@(() => selectedSupplier)" *@
-@*                        placeholder="Search by supplier name" *@
-@*                        ShowDropDownOnFocus="true" *@
-@*                        EnableDropDown="true" *@
-@*                        Debounce="500"> *@
-@*         <SelectedTemplate> *@
-@*             @context.Name *@
-@*         </SelectedTemplate> *@
-@*         <ResultTemplate> *@
-@*             @context.Name (@context.IsActive.ToString()) *@
-@*         </ResultTemplate> *@
-@*         <NotFoundTemplate> *@
-@*             Sorry, there weren't any search results. *@
-@*         </NotFoundTemplate> *@
-@*     </BlazoredTypeahead> *@
-@* } *@
-@* *@
-@* *@
-@* *@
-@* *@
-@* *@
-@* @code { *@
-@* *@
-@*     [Parameter] *@
-@*     public Guid Value { get; set; } *@
-@* *@
-@*     [Parameter] *@
-@*     public EventCallback<Guid> ValueChanged { get; set; } *@
-@* *@
-@*     [Inject] *@
-@*     HttpClient Client { get; set; } *@
-@* *@
-@*     List<ClassroomDto> supplierList; *@
-@*     ClassroomDto selectedSupplier = new ClassroomDto(); *@
-@* *@
-@*     String loadingMessage = "Loading..."; *@
-@* *@
-@*     protected async override Task OnInitializedAsync() *@
-@*     { *@
-@*         try *@
-@*         { *@
-@*             supplierList = await Client.GetServiceResponseAsync<List<ClassroomDto>>("api/Supplier/Suppliers"); *@
-@* *@
-@*             if (!Value.IsNull()) *@
-@*                 selectedSupplier = supplierList.FirstOrDefault(i => i.Id == Value); *@
-@* *@
-@*         } *@
-@*         catch (ApiException) *@
-@*         { *@
-@*             loadingMessage = "Loading Error"; *@
-@*         } *@
-@*     } *@
-@* *@
-@*     private Task SelectedSupplierChanged(ClassroomDto Supplier) *@
-@*     { *@
-@*         if (Supplier == null) *@
-@*         { *@
-@*             return ValueChanged.InvokeAsync(Guid.Empty); *@
-@*         } *@
-@* *@
-@*         selectedSupplier = Supplier; *@
-@*         Value = Supplier.Id; *@
-@* *@
-@*         return ValueChanged.InvokeAsync(Supplier.Id); *@
-@*     } *@
-@* *@
-@* *@
-@*     async Task<IEnumerable<ClassroomDto>> searchSupplier(String searchText) *@
-@*     { *@
-@*         return await Task.FromResult(supplierList.Where(i => i.Name.ToUpper().Contains(searchText.ToUpper())).ToList()); *@
-@*     } *@
-@* } *@
+﻿@using StudyBuddy.WebUi.Models
+@using StudyBuddy.WebUi.CustomException
+@using Blazored.Typeahead
+@if (userList == null)
+{
+    <p>
+        <em>
+            @_loadingMessage
+        </em>
+    </p>
+}
+else
+{
+    <BlazoredTypeahead SearchMethod="@searchUserlist"
+                       TValue="UserDto"
+                       TItem="UserDto"
+                       Value="selectedUser"
+                       ValueChanged="selectedUserChanged"
+                       placeholder="Search by user name"
+                       ShowDropDownOnFocus="true"
+                       EnableDropDown="true"
+                       Debounce="500"
+    >
+        <SelectedTemplate>
+            @context.userName
+        </SelectedTemplate>
+        <ResultTemplate>
+            @context.userName (@context.email)
+        </ResultTemplate>
+    </BlazoredTypeahead>
+
+}
+
+
+
+@code
+{
+
+    [Parameter]
+    public Guid Value { get; set; }
+    [Parameter]
+    public EventCallback<Guid> ValueChanged { get; set; }
+
+    [Inject]
+    HttpClient Client { get; set; }
+
+    List<UserDto> userList;
+    UserDto selectedUser = new UserDto();
+    String _loadingMessage = "Loading";
+    protected override async void OnInitialized()
+    {
+        try
+        {
+            userList = (await Client.GetServiceResponseAsync<List<UserDto>>("https://localhost:7042/api/user/all/100/1", true)).Data!;
+
+        }
+        catch (ApiException e)
+        {
+
+            _loadingMessage = "Loading Errror";
+            
+        }
+    }
+
+    private Task selectedUserChanged(UserDto Users)
+    {
+        if (Users == null)
+        {
+            return ValueChanged.InvokeAsync(Guid.Empty);
+        }
+        selectedUser = Users;
+        Value = Users.Id;
+        return ValueChanged.InvokeAsync(Users.Id);
+    }
+
+    async Task<IEnumerable<UserDto>> searchUserlist(String searchText)
+    {
+        return await Task.FromResult(userList.Where(i => i.userName.ToUpper().Contains(searchText.ToUpper())).ToList());
+    }
+    
+
+}

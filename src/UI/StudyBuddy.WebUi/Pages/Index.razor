@@ -11,12 +11,16 @@ Welcome to your new app.
 @code
 {
     private int counter = 0;
+    private Guid _usersGuid = Guid.Parse("09b4dcd5-9559-498c-ad13-8d545695ab68");
 
     protected override async Task OnInitializedAsync()
     {
         
         counter = await localStorage.GetItemAsync<int>("counter");
         
+        <StudyBuddy.WebUi.CustomComponents.SupplierDropDown @bind-Value="_usersGuid" @bind-Value:event="ValueChanged" />
+        
         
     }
 }
+  

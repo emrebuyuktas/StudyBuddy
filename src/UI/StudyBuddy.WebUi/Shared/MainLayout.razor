@@ -8,10 +8,15 @@
     </div>
 
     <main>
+
+
+        <div style="background-color: #102464 " class="navbar navbar-dark , top-row px-4">
+            <a style="color: white" href="/profile"><i class="fa fa-fw fa-home"></i> @name</a>
+            <a style="color: white" href="/logout"><i class="fa fa-fw fa-user"></i> Logout</a>
+        </div> 
+
         
-            <div class="top-row px-4">
-                <a href="http://blazor.net" target="_blank" class="ml-md-auto">@name</a>
-            </div>
+        
         
         <article class="content px-4">
             @Body
@@ -22,8 +27,20 @@
 
 
 
+
+
+
 @code
 {
+    private bool collapseNavMenu = true;
+
+    private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
+
+    private void ToggleNavMenu()
+    {
+        collapseNavMenu = !collapseNavMenu;
+    }
+    
     [CascadingParameter]
     public Task<AuthenticationState> AuthState { get; set; }
 
@@ -42,16 +59,20 @@
 
         if (authState.User.Identity.IsAuthenticated)
         {
-    //authState.User.Claims.FirstOrDefault(i => i.ValueType == ClaimTypes.EMail);
+    
 
-            name = await LocalStorageService.GetItemAsStringAsync("userName");
-            logingStr = await LocalStorageService.GetItemAsStringAsync("email");
+            name = await LocalStorageService.GetItemAsync<string>("userName");
+            logingStr = await LocalStorageService.GetItemAsync<string>("email");
         }
         else
         {
             NavigationManager.NavigateTo("/login");
         }
+        
     }
+    
+    
+    
 }
 
 

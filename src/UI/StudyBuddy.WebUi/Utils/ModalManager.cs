@@ -16,7 +16,7 @@ namespace StudyBuddy.WebUi.Utils
 
 
 
-        public async Task ShowMessageAsync(String Title, String Message, int Duration = 0)
+        public  async Task ShowMessageAsync(String Title, String Message, int Duration = 0)
         {
             ModalParameters mParams = new ModalParameters();
             mParams.Add("Message", Message);
