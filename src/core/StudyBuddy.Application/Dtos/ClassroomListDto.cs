@@ -8,5 +8,5 @@ public class ClassroomListDto
 {
     public string Id { get; set; }
     public string Name { get; set; }
-    public List<Tag> Tags { get; set; }
+    public List<TagDto> Tags { get; set; }
 }
