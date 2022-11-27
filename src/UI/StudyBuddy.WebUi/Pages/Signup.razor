@@ -36,7 +36,7 @@
             @*     </div> *@
             @* </EditForm> *@
 
-            <form>
+            <form Model="@_signupDto" OnValidSubmit="signUpProcess">
                 <div class="row mb-3">
                     <label for="inputName3" class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
@@ -55,7 +55,14 @@
                         <input @bind-value="_signupDto.Password" type="password" class="form-control" id="inputPassword3">
                     </div>
                 </div>
+                <fieldset class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Tags</legend>
+                    <div class="col-sm-10">
+                        <StudyBuddy.WebUi.CustomComponents.SupplierDropDown/>
+                    </div>
 
+
+                </fieldset>
                 <button type="submit" class="btn btn-primary">Sign in</button>
             </form>
             
