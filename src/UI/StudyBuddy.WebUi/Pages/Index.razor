@@ -1,24 +1,25 @@
 ﻿@page "/"
-@using StudyBuddy.WebUi.Models
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
-
 
 
 <h1>Counter</h1>
 <p>Current count: @counter</p>
-Welcome to your new app.
+<h1>Chose tag</h1>
 
-<SurveyPrompt Title="How is Blazor working for you?" />
-        <StudyBuddy.WebUi.CustomComponents.SupplierDropDown @bind-Value="name" @bind-Value:event="ValueChanged"></StudyBuddy.WebUi.CustomComponents.SupplierDropDown>
+<StudyBuddy.WebUi.CustomComponents.SupplierDropDown></StudyBuddy.WebUi.CustomComponents.SupplierDropDown>
+
 @code
 {
     private int counter = 0;
-    private string name = "Emre";
+   
 
     protected override async Task OnInitializedAsync()
     {
-
+        
         counter = await localStorage.GetItemAsync<int>("counter");
+        
+        
+        
 
 
 
