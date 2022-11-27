@@ -4,6 +4,7 @@ using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Caching.Distributed;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Helpers;
@@ -19,6 +20,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
     public string UserName { get; set; }
     public string Email { get; set; }
     public string Password { get; set; }
+    public List<TagDto> TagDtos { get; set; }
 }
 
  public class SignupCommandHandler : IRequestHandler<SignupCommand, Response<UserDto>>
@@ -44,6 +46,7 @@ public class SignupCommand : IRequest<Response<UserDto>>
      public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
      {
          var user = _mapper.Map<AppUser>(request);
+         user.Tags=await _dbContext.Tags.Where(x => request.TagDtos.Select(y=>y.Id).Contains(x.Id)).ToListAsync(cancellationToken: cancellationToken);
          var result=await _userManager.CreateAsync(user, request.Password);
          if (!result.Succeeded)
              return Response<UserDto>.Fail(result.Errors.FirstOrDefault().Description, 500);
