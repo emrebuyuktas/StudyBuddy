@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.SignalR;
 namespace StudyBuddy.SignalR.Hubs;
 
 [Authorize]
-public class Classroom :  Hub
+public class ClassroomHub :  Hub
 {
     public async Task JoinClassroom(string id)
     {

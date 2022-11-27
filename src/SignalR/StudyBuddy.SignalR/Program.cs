@@ -14,7 +14,8 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", builder =>
     {
-        builder.WithOrigins("https://localhost:7196",";http://localhost:5196","https://localhost:7042").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        //builder.WithOrigins("https://localhost:7196",";http://localhost:5196","https://localhost:7042").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
+        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
     });
 });
 builder.Services.AddSwaggerGen();
@@ -36,7 +37,7 @@ app.UseAuthorization();
 
 app.UseEndpoints(enpoints =>
 {
-    enpoints.MapHub<Classroom>("/Clasroom");
+    enpoints.MapHub<ClassroomHub>("/ClassroomHub");
     enpoints.MapControllers();
 });
 
