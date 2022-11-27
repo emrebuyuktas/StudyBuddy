@@ -16,7 +16,7 @@ else
         
         <div class="col-sm-10">
             <div class="form-check">
-                <input   class="form-check-input" type="checkbox" id="@item.Id">
+                <input   class="form-check-input" type="checkbox" value="@item.Name" id="@item.Id" @onchange="eventArgs => { CheckboxClicked( item.Name,item.Id, eventArgs.Value); }">
                 <label class="form-check-label" for="@item.Id">
                     @item.Name
                 </label>
@@ -56,9 +56,32 @@ else
         else
         {
             taglist = res.Data;
-            foreach (var item in res.Data)
+        }
+    }
+    
+    public List<TagDto> CheckBox { get; set; } = new List<TagDto>();
+    void CheckboxClicked(string name,int id, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!CheckBox.Any(x=>x.Id==id))
             {
-                Console.WriteLine(item.Name);
+                CheckBox.Add(new TagDto
+                {
+                    Id = id,
+                    Name = name
+                });
+                foreach (var item in CheckBox)
+                {
+                    Console.WriteLine(item.Name);
+                }
+            }
+        }
+        else
+        {
+            if (CheckBox.Any(x=>x.Id==id))
+            {
+                CheckBox.RemoveAll(x=>x.Id==id);
             }
         }
     }

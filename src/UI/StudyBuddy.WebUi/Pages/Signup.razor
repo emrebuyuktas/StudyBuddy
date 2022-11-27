@@ -58,16 +58,24 @@
                 <fieldset class="row mb-3">
                     <legend class="col-form-label col-sm-2 pt-0">Tags</legend>
                     <div class="col-sm-10">
-                        <StudyBuddy.WebUi.CustomComponents.SupplierDropDown/>
+                        @foreach (var item in taglist)
+                        {
+                            <div class="col-sm-10">
+                                <div class="form-check">
+                                    <input class="form-check-input" type="checkbox" value="@item.Name" id="@item.Id" @onchange="eventArgs => { CheckboxClicked(item.Name, item.Id, eventArgs.Value); }">
+                                    <label class="form-check-label" for="@item.Id">
+                                        @item.Name
+                                    </label>
+                                </div>
+                            </div>
+                        }
                     </div>
 
 
                 </fieldset>
                 <button type="submit" class="btn btn-primary">Sign in</button>
             </form>
-            
-            
-            
+
 
         </div>
 
@@ -91,10 +99,27 @@
     [Inject]
     AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
 
+    List<TagDto> taglist;
     private SignupDto _signupDto = new();
+    public List<TagDto> CheckBox { get; set; } = new List<TagDto>();
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = (await Client.GetServiceResponseAsync<List<TagDto>>("https://localhost:7042/api/Tag/all", true));
+        if (res.StatusCode != 200)
+        {
+            Console.WriteLine(res.Error.Errors.First());
+        }
+        else
+        {
+            taglist = res.Data;
+        }
+    }
+
 
     private async Task signUpProcess()
     {
+        _signupDto.TagDtos = CheckBox;
         var httpRequest = await Client.PostGetServiceResponseAsync<UserDto, SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
 
 
@@ -102,7 +127,6 @@
         {
             await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
         }
-
 
         else
         {
@@ -117,8 +141,37 @@
             Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
 
             NavManager?.NavigateTo("/");
-
         }
     }
+
+    
+
+    void CheckboxClicked(string name, int id, object checkedValue)
+    {
+        if ((bool)checkedValue)
+        {
+            if (!CheckBox.Any(x => x.Id == id))
+            {
+                CheckBox.Add(new TagDto
+                {
+                    Id = id,
+                    Name = name
+                });
+                foreach (var item in CheckBox)
+                {
+                    Console.WriteLine(item.Name);
+                }
+            }
+        }
+        else
+        {
+            if (CheckBox.Any(x => x.Id == id))
+            {
+                CheckBox.RemoveAll(x => x.Id == id);
+            }
+        }
+    }
+
+
 
 }
