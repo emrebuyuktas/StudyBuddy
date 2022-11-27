@@ -11,33 +11,10 @@
 
         <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
 
-            @* <EditForm Model="@_signupDto" OnValidSubmit="signUpProcess"> *@
-            @*     <DataAnnotationsValidator/> *@
-            @* *@
-            @*     <div class="container"> *@
-            @*         <div class="col align-items-center"> *@
-            @*             <div class="form-group row-4"> *@
-            @*                 <input @bind-value="_signupDto.UserName" class="form-control form-control-lg" type="text" placeholder="User Name"/> *@
-            @*             </div> *@
-            @*             <br/> *@
-            @*             <div class="form-group row-4"> *@
-            @*                 <input @bind-value="_signupDto.Email" class="form-control form-control-lg" type="text" placeholder="E-Mail Address"/> *@
-            @*             </div> *@
-            @*             <br/> *@
-            @* *@
-            @*             <div class="form-group row-4"> *@
-            @*                 <input @bind-value="_signupDto.Password" class="form-control form-control-lg" type="password" placeholder="Password"/> *@
-            @*             </div> *@
-            @*             <br/> *@
-            @*             <div class="form-group row-4" align="right"> *@
-            @*                 <button class="btn btn-info btn-block">SignUp</button> *@
-            @*             </div> *@
-            @*         </div> *@
-            @*     </div> *@
-            @* </EditForm> *@
-
-            <form Model="@_signupDto" OnValidSubmit="signUpProcess">
-                <div class="row mb-3">
+            <EditForm Model="@_signupDto" OnValidSubmit="signUpProcess"> 
+                 <DataAnnotationsValidator/> 
+            
+             <div class="row mb-3">
                     <label for="inputName3" class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
                         <input @bind-value="_signupDto.UserName" type="text" class="form-control" id="inputName3">
@@ -58,24 +35,31 @@
                 <fieldset class="row mb-3">
                     <legend class="col-form-label col-sm-2 pt-0">Tags</legend>
                     <div class="col-sm-10">
-                        @foreach (var item in taglist)
-                        {
-                            <div class="col-sm-10">
-                                <div class="form-check">
-                                    <input class="form-check-input" type="checkbox" value="@item.Name" id="@item.Id" @onchange="eventArgs => { CheckboxClicked(item.Name, item.Id, eventArgs.Value); }">
-                                    <label class="form-check-label" for="@item.Id">
-                                        @item.Name
-                                    </label>
+                         @foreach (var item in taglist)
+                            {
+                                
+                                <div class="col-sm-10">
+                                    <div class="form-check">
+                                        <input   class="form-check-input" type="checkbox" value="@item.Name" id="@item.Id" @onchange="eventArgs => { CheckboxClicked( item.Name,item.Id, eventArgs.Value); }">
+                                        <label class="form-check-label" for="@item.Id">
+                                            @item.Name
+                                        </label>
+                                    </div>
                                 </div>
-                            </div>
-                        }
+                            }
                     </div>
 
 
                 </fieldset>
-                <button type="submit" class="btn btn-primary">Sign in</button>
-            </form>
+                            <div class="form-group row-4" align="right">
+                                <button class="btn btn-info btn-block">SignUp</button>
+                            </div>
+             </EditForm> 
 
+
+            
+            
+            
 
         </div>
 
@@ -99,9 +83,17 @@
     [Inject]
     AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
 
-    List<TagDto> taglist;
     private SignupDto _signupDto = new();
-    public List<TagDto> CheckBox { get; set; } = new List<TagDto>();
+
+    [Parameter]
+    public string Value { get; set; }
+
+    
+
+    List<TagDto> taglist=new ();
+
+
+    String loadingMessage = "Loading...";
 
     protected override async Task OnInitializedAsync()
     {
@@ -115,42 +107,13 @@
             taglist = res.Data;
         }
     }
-
-
-    private async Task signUpProcess()
-    {
-        _signupDto.TagDtos = CheckBox;
-        var httpRequest = await Client.PostGetServiceResponseAsync<UserDto, SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
-
-
-        if (httpRequest.StatusCode != 201)
-        {
-            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
-        }
-
-        else
-        {
-            if (LocalStorageService != null)
-            {
-                await LocalStorageService.SetItemAsync("token", httpRequest.Data?.accessToken);
-                await LocalStorageService.SetItemAsync("email", httpRequest.Data?.email);
-                await LocalStorageService.SetItemAsync("userName", httpRequest.Data?.userName);
-            }
-
-            (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogin(httpRequest.Data?.email!);
-            Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
-
-            NavManager?.NavigateTo("/");
-        }
-    }
-
     
-
-    void CheckboxClicked(string name, int id, object checkedValue)
+    public List<TagDto> CheckBox { get; set; } = new List<TagDto>();
+    void CheckboxClicked(string name,int id, object checkedValue)
     {
         if ((bool)checkedValue)
         {
-            if (!CheckBox.Any(x => x.Id == id))
+            if (!CheckBox.Any(x=>x.Id==id))
             {
                 CheckBox.Add(new TagDto
                 {
@@ -165,13 +128,43 @@
         }
         else
         {
-            if (CheckBox.Any(x => x.Id == id))
+            if (CheckBox.Any(x=>x.Id==id))
             {
-                CheckBox.RemoveAll(x => x.Id == id);
+                CheckBox.RemoveAll(x=>x.Id==id);
             }
         }
     }
+    
+    
+    private async Task signUpProcess()
+    {
+        _signupDto.TagDtos = CheckBox;
+        
+        
+        var httpRequest = await Client.PostGetServiceResponseAsync<UserDto, SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
 
 
+        if (httpRequest.StatusCode != 201)
+        {
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
+        }
+
+
+        else
+        {
+            if (LocalStorageService != null)
+            {
+                await LocalStorageService.SetItemAsync("token", httpRequest.Data?.accessToken);
+                await LocalStorageService.SetItemAsync("email", httpRequest.Data?.email);
+                await LocalStorageService.SetItemAsync("userName", httpRequest.Data?.userName);
+            }
+
+            (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogin(httpRequest.Data?.email!);
+            Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
+
+            NavManager?.NavigateTo("/");
+
+        }
+    }
 
 }
