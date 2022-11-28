@@ -56,11 +56,11 @@
                     <div class="d-flex justify-content-between">
                         <div class="d-flex flex-row align-items-center">
                             <div class="ms-2 c-details">
-                                <h6 class="mb-0">TagName</h6>
+                                <h6 class="mb-0">@item.Tag.Name</h6>
                             </div>
                         </div>
                         <div class="badge">
-                            <button class="btn btn-info btn-block" id="@item.Id">Join</button>
+                            <button class="btn btn-info btn-block" @onclick="@(()=> classroomProcess(@item.Id))" id="@item.Id" >Join</button>
                         </div>
                     </div>
                     <div class="mt-5">
@@ -128,9 +128,25 @@
             
         }
     }
-    private async Task signUpProcess()
+    private async Task classroomProcess(string id)
     {
+        var join = new JoinClassroomDto
+        {
+            ClassroomId = new Guid(id)
+        };
         
+        var httpRequest = await Client.PostGetServiceResponseAsync<ClassroomDto, JoinClassroomDto>("https://localhost:7042/api/Classroom/join", join);
+
+        if (httpRequest.StatusCode==201)
+        {
+            NavManager?.NavigateTo("/test");
+            
+        }
+        else
+        {
+            Console.WriteLine("err");
+        }
+
     }
     
 }
