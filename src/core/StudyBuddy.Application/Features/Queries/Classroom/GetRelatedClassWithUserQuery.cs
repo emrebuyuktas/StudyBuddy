@@ -33,15 +33,14 @@ public class GetRelatedClassWithUserHandler : RequestHandlerBase<GetRelatedClass
     public override async Task<Response<List<ClassroomListDto>>> Handle(GetRelatedClassWithUserQuery request,
         CancellationToken cancellationToken)
     {
-        var user = await _dbContext.AppUsers.Where(x => x.Id == UserId).Include(x => x.Classrooms).ThenInclude(x=>x.AppUser).Include(x => x.Tags)
+        var user = await _dbContext.AppUsers.Where(x => x.Id == UserId).Include(x => x.Classrooms).Include(x => x.Tags)
             .FirstAsync(cancellationToken: cancellationToken);
-        var classrooms = _dbContext.Classrooms.Where(x => user.Tags.Any(y=>y.Id==x.Tag.Id))
+        var classrooms = _dbContext.Classrooms.Where(x => user.Tags.Contains(x.Tag))
             .OrderBy(r => Guid.NewGuid()).Take(10).Select(x => new ClassroomListDto
             {
                 Id = x.Id.ToString(),
                 Name = x.Name,
-                Tag = _mapper.Map<TagDto>(x.Tag),
-                MemberCount = x.Users.Count
+                Tag = _mapper.Map<TagDto>(x.Tag)
             }).ToList();
 
         return Response<List<ClassroomListDto>>.Success(classrooms, 200);
