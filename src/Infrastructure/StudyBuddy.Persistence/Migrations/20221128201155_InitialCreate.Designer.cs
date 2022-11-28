@@ -12,7 +12,7 @@ using StudyBuddy.Persistence.Context;
 namespace StudyBuddy.Persistence.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20221126131419_InitialCreate")]
+    [Migration("20221128201155_InitialCreate")]
     partial class InitialCreate
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -37,21 +37,6 @@ namespace StudyBuddy.Persistence.Migrations
                     b.HasIndex("UsersId");
 
                     b.ToTable("AppUserTag");
-                });
-
-            modelBuilder.Entity("ClassroomTag", b =>
-                {
-                    b.Property<Guid>("ClassroomsId")
-                        .HasColumnType("uniqueidentifier");
-
-                    b.Property<int>("TagsId")
-                        .HasColumnType("int");
-
-                    b.HasKey("ClassroomsId", "TagsId");
-
-                    b.HasIndex("TagsId");
-
-                    b.ToTable("ClassroomTag");
                 });
 
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRole", b =>
@@ -263,7 +248,12 @@ namespace StudyBuddy.Persistence.Migrations
                         .HasMaxLength(250)
                         .HasColumnType("nvarchar(250)");
 
+                    b.Property<int>("TagId")
+                        .HasColumnType("int");
+
                     b.HasKey("Id");
+
+                    b.HasIndex("TagId");
 
                     b.ToTable("Classrooms");
                 });
@@ -345,21 +335,6 @@ namespace StudyBuddy.Persistence.Migrations
                         .IsRequired();
                 });
 
-            modelBuilder.Entity("ClassroomTag", b =>
-                {
-                    b.HasOne("StudyBuddy.Domain.Entities.Classroom", null)
-                        .WithMany()
-                        .HasForeignKey("ClassroomsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("StudyBuddy.Domain.Entities.Tag", null)
-                        .WithMany()
-                        .HasForeignKey("TagsId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-                });
-
             modelBuilder.Entity("Microsoft.AspNetCore.Identity.IdentityRoleClaim<string>", b =>
                 {
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityRole", null)
@@ -409,6 +384,17 @@ namespace StudyBuddy.Persistence.Migrations
                         .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+                });
+
+            modelBuilder.Entity("StudyBuddy.Domain.Entities.Classroom", b =>
+                {
+                    b.HasOne("StudyBuddy.Domain.Entities.Tag", "Tag")
+                        .WithMany("Classrooms")
+                        .HasForeignKey("TagId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Tag");
                 });
 
             modelBuilder.Entity("StudyBuddy.Domain.Entities.Message", b =>
@@ -461,6 +447,11 @@ namespace StudyBuddy.Persistence.Migrations
                     b.Navigation("Messages");
 
                     b.Navigation("Users");
+                });
+
+            modelBuilder.Entity("StudyBuddy.Domain.Entities.Tag", b =>
+                {
+                    b.Navigation("Classrooms");
                 });
 #pragma warning restore 612, 618
         }
