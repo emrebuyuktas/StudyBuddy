@@ -35,7 +35,7 @@ public class GetRelatedClassWithUserHandler : RequestHandlerBase<GetRelatedClass
     {
         var user = await _dbContext.AppUsers.Where(x => x.Id == UserId).Include(x => x.Classrooms).Include(x => x.Tags)
             .FirstAsync(cancellationToken: cancellationToken);
-        var classrooms = _dbContext.Classrooms.Where(x => user.Tags.Contains(x.Tag))
+        var classrooms = _dbContext.Classrooms.Where(x => user.Tags.Contains(x.Tag) && x.Users.All(y => y.AppUser.Id != user.Id))
             .OrderBy(r => Guid.NewGuid()).Take(10).Select(x => new ClassroomListDto
             {
                 Id = x.Id.ToString(),
