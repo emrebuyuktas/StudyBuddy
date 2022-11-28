@@ -27,11 +27,11 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
     public override async Task<Response<List<UserClassroomDto>>> Handle(GetAllClassroomsByUserQuery request, CancellationToken cancellationToken)
     {
         var rooms = ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
-            Include(x => x.Classroom).ThenInclude(y=>y.Tags).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
+            Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
         {
             UserName = x.AppUser.UserName,
             ClassroomName = x.Classroom.Name,
-            Tags = _mapper.Map<List<TagDto>>(x.Classroom.Tags)
+            Tag = _mapper.Map<TagDto>(x.Classroom.Tag)
         });
         return Response<List<UserClassroomDto>>.Success(await rooms.ToListAsync(cancellationToken: cancellationToken),200);
     }

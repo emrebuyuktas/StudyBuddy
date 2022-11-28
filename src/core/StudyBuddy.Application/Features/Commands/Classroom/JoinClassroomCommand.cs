@@ -33,7 +33,7 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
     {
         var user = await _userManager.FindByIdAsync(UserId);
         var classroom = await _dbContext.Classrooms.Where(x => x.Id == request.ClassroomId).Include(x=>x.Users)
-            .Include(x=>x.Messages).Include(x=>x.Tags).FirstOrDefaultAsync(cancellationToken: cancellationToken);
+            .Include(x=>x.Messages).Include(x=>x.Tag).FirstOrDefaultAsync(cancellationToken: cancellationToken);
         if (user is null || classroom is null)
             return Response<ClassroomDto>.Fail("Something went wrong", 404);
         classroom.Users.Add(new UserClassroom
@@ -53,7 +53,7 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
         {
             Id = classroom.Id,
             Name = classroom.Name,
-            Tag = _mapper.Map<List<TagDto>>(classroom.Tags),
+            Tag = _mapper.Map<TagDto>(classroom.Tag),
             AppUsers = userDtoList
 
         }, 200);

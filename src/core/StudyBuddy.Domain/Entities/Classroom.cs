@@ -8,5 +8,5 @@ public class Classroom
     public List<Message> Messages { get; set; }
     //public virtual List<AppUser> Users { get; set; }
     public virtual ICollection<UserClassroom> Users { get; set; }
-    public List<Tag> Tags { get; set; }
+    public Tag Tag { get; set; }
 }
