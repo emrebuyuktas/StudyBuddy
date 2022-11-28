@@ -38,9 +38,6 @@
     </div>
 </div>
 
-<div>
-    <text>@token</text>
-</div>
 @code {
 
     [CascadingParameter]
@@ -83,6 +80,9 @@
             name = await LocalStorageService.GetItemAsync<string>("userName");
             email = await LocalStorageService.GetItemAsync<string>("email");
             token= await LocalStorageService.GetItemAsync<string>("token");
+            
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
         }
         else
         {

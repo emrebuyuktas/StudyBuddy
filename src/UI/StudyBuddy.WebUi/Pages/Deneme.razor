@@ -1,5 +1,189 @@
-﻿<h3>Deneme</h3>
-
-@code {
-    
-}
+﻿@* @page "/test" *@
+@* @using StudyBuddy.WebUi.Models *@
+@* @using StudyBuddy.Application.Dtos *@
+@* <h3>Deneme</h3> *@
+@* <style> *@
+@*     body { *@
+@*         background-color: #eee *@
+@*     } *@
+@*      *@
+@*     .card { *@
+@*         border: none; *@
+@*         border-radius: 10px *@
+@*     } *@
+@*      *@
+@*     .c-details span { *@
+@*         font-weight: 300; *@
+@*         font-size: 13px *@
+@*     } *@
+@*        *@
+@*     .badge span { *@
+@*         background-color: #0dcaf0; *@
+@*         width: 60px; *@
+@*         height: 25px; *@
+@*         padding-bottom: 3px; *@
+@*         border-radius: 5px; *@
+@*         display: flex; *@
+@*         color: #0c63e4; *@
+@*         justify-content: center; *@
+@*         align-items: center *@
+@*     } *@
+@*      *@
+@*     .progress { *@
+@*         height: 10px; *@
+@*         border-radius: 10px *@
+@*     } *@
+@*      *@
+@*     .progress div { *@
+@*         background-color: red *@
+@*     } *@
+@*      *@
+@*     .text1 { *@
+@*         font-size: 14px; *@
+@*         font-weight: 600 *@
+@*     } *@
+@*      *@
+@*     .text2 { *@
+@*         color: #a5aec0 *@
+@*     } *@
+@* </style> *@
+@* *@
+@* *@
+@* @code { *@
+@* *@
+@*     [CascadingParameter] *@
+@*     IModalService Modal { get; set; } *@
+@* *@
+@*     [Inject] *@
+@*     HttpClient? Client { get; set; } *@
+@* *@
+@*     [Inject] *@
+@*     NavigationManager? NavManager { get; set; } *@
+@* *@
+@*     [Inject] *@
+@*     ModalManager? ModalManager { get; set; } *@
+@* *@
+@*     [Inject] *@
+@*     ILocalStorageService? LocalStorageService { get; set; } *@
+@* *@
+@*     List<ClassroomListDto> _classroomListDtos = new(); *@
+@* *@
+@* *@
+@*     String loadingMessage = "Loading..."; *@
+@* *@
+@*     protected override async Task OnInitializedAsync() *@
+@*     { *@
+@*         var token = await LocalStorageService.GetItemAsync<string>("token"); *@
+@* *@
+@*         var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Tag/all", true)); *@
+@* *@
+@* *@
+@*         if (httpRequest.StatusCode != 200) *@
+@*         { *@
+@*             Console.WriteLine(httpRequest.Error.Errors.First()); *@
+@*         } *@
+@*         else *@
+@*         { *@
+@*             _classroomListDtos = httpRequest.Data; *@
+@*         } *@
+@*     } *@
+@* *@
+@* $1$ }@page "/test" #1# *@
+@* $1$ @using StudyBuddy.WebUi.Models #1# *@
+@* $1$ @using StudyBuddy.Application.Dtos #1# *@
+@* $1$ <h3>Deneme</h3> #1# *@
+@* $1$ <style> #1# *@
+@* $1$     body { #1# *@
+@* $1$         background-color: #eee #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .card { #1# *@
+@* $1$         border: none; #1# *@
+@* $1$         border-radius: 10px #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .c-details span { #1# *@
+@* $1$         font-weight: 300; #1# *@
+@* $1$         font-size: 13px #1# *@
+@* $1$     } #1# *@
+@* $1$        #1# *@
+@* $1$     .badge span { #1# *@
+@* $1$         background-color: #0dcaf0; #1# *@
+@* $1$         width: 60px; #1# *@
+@* $1$         height: 25px; #1# *@
+@* $1$         padding-bottom: 3px; #1# *@
+@* $1$         border-radius: 5px; #1# *@
+@* $1$         display: flex; #1# *@
+@* $1$         color: #0c63e4; #1# *@
+@* $1$         justify-content: center; #1# *@
+@* $1$         align-items: center #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .progress { #1# *@
+@* $1$         height: 10px; #1# *@
+@* $1$         border-radius: 10px #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .progress div { #1# *@
+@* $1$         background-color: red #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .text1 { #1# *@
+@* $1$         font-size: 14px; #1# *@
+@* $1$         font-weight: 600 #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$     .text2 { #1# *@
+@* $1$         color: #a5aec0 #1# *@
+@* $1$     } #1# *@
+@* $1$ </style> #1# *@
+@* $1$ #1# *@
+@* $1$ @foreach () #1# *@
+@* $1$ { #1# *@
+@* $1$      #1# *@
+@* $1$ } #1# *@
+@* $1$ #1# *@
+@* $1$ @code { #1# *@
+@* $1$     [CascadingParameter] #1# *@
+@* $1$     IModalService Modal { get; set; } #1# *@
+@* $1$ #1# *@
+@* $1$     [Inject] #1# *@
+@* $1$     HttpClient? Client { get; set; } #1# *@
+@* $1$ #1# *@
+@* $1$     [Inject] #1# *@
+@* $1$     NavigationManager? NavManager { get; set; } #1# *@
+@* $1$ #1# *@
+@* $1$     [Inject] #1# *@
+@* $1$     ModalManager? ModalManager { get; set; } #1# *@
+@* $1$ #1# *@
+@* $1$     [Inject] #1# *@
+@* $1$     ILocalStorageService? LocalStorageService { get; set; } #1# *@
+@* $1$      #1# *@
+@* $1$     List<ClassroomListDto> _classroomListDtos=new (); #1# *@
+@* $1$ #1# *@
+@* $1$ #1# *@
+@* $1$      #1# *@
+@* $1$ #1# *@
+@* $1$ #1# *@
+@* $1$     String loadingMessage = "Loading..."; #1# *@
+@* $1$ #1# *@
+@* $1$     protected override async Task OnInitializedAsync() #1# *@
+@* $1$     { #1# *@
+@* $1$         var token= await LocalStorageService.GetItemAsync<string>("token"); #1# *@
+@* $1$          #1# *@
+@* $1$         var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Tag/all", true)); #1# *@
+@* $1$ #1# *@
+@* $1$          #1# *@
+@* $1$          #1# *@
+@* $1$          #1# *@
+@* $1$         if (httpRequest.StatusCode != 200) #1# *@
+@* $1$         { #1# *@
+@* $1$             Console.WriteLine(httpRequest.Error.Errors.First()); #1# *@
+@* $1$         } #1# *@
+@* $1$         else #1# *@
+@* $1$         { #1# *@
+@* $1$             _classroomListDtos = httpRequest.Data; #1# *@
+@* $1$         } #1# *@
+@* $1$     } #1# *@
+@* $1$      #1# *@
+@* $1$ } #1# *@
