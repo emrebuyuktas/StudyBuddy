@@ -49,7 +49,7 @@ public class GetClassroomByUserQueryHandler : RequestHandlerBase<GetClassroomByU
         {
             AppUsers = users,
             Messages = messages,
-            Tag = _mapper.Map<List<TagDto>>(room.Tags),
+            Tag = _mapper.Map<TagDto>(room.Tag),
             Id = room.Id,
             Name = room.Name
         },200);

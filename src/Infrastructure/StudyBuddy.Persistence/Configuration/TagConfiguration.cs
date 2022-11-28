@@ -11,5 +11,6 @@ public class TagConfiguration : IEntityTypeConfiguration<Tag>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).ValueGeneratedNever();
         builder.HasMany<AppUser>(x => x.Users).WithMany(y => y.Tags);
+        builder.HasMany<Classroom>(x => x.Classrooms).WithOne(y => y.Tag);
     }
 }

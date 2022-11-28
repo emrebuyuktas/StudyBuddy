@@ -11,6 +11,5 @@ public class ClassroomConfiguration : IEntityTypeConfiguration<Classroom>
         builder.HasKey(x => x.Id);
         builder.Property(x => x.Id).ValueGeneratedOnAdd();
         builder.Property(x => x.Name).HasMaxLength(250);
-        builder.HasMany<Tag>(x => x.Tags).WithMany(y => y.Classrooms);
     }
 }
