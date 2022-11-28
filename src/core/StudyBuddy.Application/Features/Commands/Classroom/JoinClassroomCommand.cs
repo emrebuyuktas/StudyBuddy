@@ -56,6 +56,6 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
             Tag = _mapper.Map<TagDto>(classroom.Tag),
             AppUsers = userDtoList
 
-        }, 200);
+        }, 201);
     }
 }

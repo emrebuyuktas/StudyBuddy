@@ -43,6 +43,6 @@ public class GetRelatedClassWithUserHandler : RequestHandlerBase<GetRelatedClass
                 Tag = _mapper.Map<TagDto>(x.Tag)
             }).ToList();
 
-        return Response<List<ClassroomListDto>>.Success(classrooms, 201);
+        return Response<List<ClassroomListDto>>.Success(classrooms, 200);
     }
 }
