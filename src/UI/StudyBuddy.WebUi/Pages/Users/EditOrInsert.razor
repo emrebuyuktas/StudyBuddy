@@ -113,7 +113,7 @@
             (AuthenticationStateProvider as AuthStateProvider)?.NotifyUserLogin(httpRequest.Data?.email!);
             Client!.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", httpRequest.Data!.accessToken);
             
-            NavManager?.NavigateTo("/profile");
+            NavManager?.NavigateTo("/");
             
 
             
