@@ -1,5 +1,4 @@
-﻿@page "/buttontest"
-@page "/buttons"
+﻿@page "/buttons"
 @using StudyBuddy.WebUi.Utils
 @using StudyBuddy.WebUi.Utils
 
@@ -12,12 +11,10 @@
         <div class="btn-toolbar">
 
 
-            <CustomEditButtonComponent Caption="ShowMessage" OnClick="changeTitle" />
+            <CustomEditButtonComponent Caption="ShowMessage" OnClick="@ChangeTitle" />
 
             <CustomEditButtonComponent Caption="Edit Caption" OnClick="@showConfirmation" Color="danger" Icon="pencil" IsSmall="false" />
-
-
-            <AddNewButtonComponent />
+            
 
 
 
@@ -39,7 +36,7 @@
 
     private String title = "";
 
-    private async Task changeTitle()
+     async Task ChangeTitle()
     {
         await ModalManager.ShowMessageAsync("Show Message Title", "Record deleted", 3000);
     }
