@@ -47,6 +47,8 @@
 <div class="container mt-5 mb-3">
     <div class="row">
         <h3>Classrooms</h3>
+        @if(_classroomListDtos.Count>0){
+        
         @foreach (var item in _classroomListDtos)
         {
 
@@ -79,7 +81,7 @@
 
 
 
-        }
+        }}
     </div>
 </div>
 
@@ -100,7 +102,8 @@
     ILocalStorageService? LocalStorageService { get; set; }
     
     List<ClassroomListDto> _classroomListDtos=new ();
-
+    [CascadingParameter]
+    public Task<AuthenticationState> AuthState { get; set; }
 
     
 
@@ -109,24 +112,37 @@
 
     protected override async Task OnInitializedAsync()
     {
-        var token= await LocalStorageService.GetItemAsync<string>("token");
-        
-        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
-        
-        var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Classroom/related", true));
-        
-        
-        
-        if (httpRequest.StatusCode != 200)
+        var authState = await AuthState;
+
+        if (authState.User.Identity.IsAuthenticated)
         {
-            Console.WriteLine(httpRequest.Error.Errors.First());
+    
+            var token= await LocalStorageService.GetItemAsync<string>("token");
+        
+            Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        
+            var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Classroom/related", true));
+        
+        
+        
+            if (httpRequest.StatusCode != 200)
+            {
+                Console.WriteLine(httpRequest.Error.Errors.First());
+            }
+            else
+            {
+                _classroomListDtos = httpRequest.Data;
+
+            
+            }
+
         }
         else
         {
-            _classroomListDtos = httpRequest.Data;
-
+            NavManager?.NavigateTo("/login");
             
         }
+        
     }
     private async Task classroomProcess(string id)
     {
@@ -136,7 +152,8 @@
         };
         
         var httpRequest = await Client.PostGetServiceResponseAsync<ClassroomDto, JoinClassroomDto>("https://localhost:7042/api/Classroom/join", join);
-
+        Console.WriteLine(httpRequest.StatusCode);
+        
         if (httpRequest.StatusCode==201)
         {
             NavManager?.NavigateTo("/test");
