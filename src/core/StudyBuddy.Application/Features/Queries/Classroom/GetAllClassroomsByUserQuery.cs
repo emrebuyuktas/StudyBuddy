@@ -29,6 +29,7 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
         var rooms = ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
             Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
         {
+            ClassroomId = x.ClassroomId.ToString(),
             UserName = x.AppUser.UserName,
             ClassroomName = x.Classroom.Name,
             Tag = _mapper.Map<TagDto>(x.Classroom.Tag)
