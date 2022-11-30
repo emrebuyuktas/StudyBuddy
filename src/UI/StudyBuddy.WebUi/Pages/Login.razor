@@ -9,26 +9,35 @@
 <div class="container-fluid h-100">
     <div class="row justify-content-center align-items-center h-100">
 
-        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3  " >
 
-            <EditForm Model="@_userLoginRequest" OnValidSubmit="LoginProcess">
-                <DataAnnotationsValidator />
+            <EditForm  Model="@_userLoginRequest" OnValidSubmit="LoginProcess">
+                <DataAnnotationsValidator/>
+                <div class="form-group row mb-3">
+                    <img  src="6681204.png" width="384" height="384" alt="Trulli">
 
-                <div class="form-group">
-                    <input @bind-value="_userLoginRequest.Email" class="form-control form-control-lg" type="text" placeholder="E-Mail Address" />
+                </div>
+                
+                <div  class="form-group row mb-3">
+                    <input @bind-value="_userLoginRequest.Email" class="form-control form-control-lg" type="text" placeholder="E-Mail Address"/>
                 </div>
 
-                <div class="form-group">
-                    <input @bind-value="_userLoginRequest.Password" class="form-control form-control-lg" type="password" placeholder="Password" />
+                <div class="form-group row mb-3">
+                    <input @bind-value="_userLoginRequest.Password" class="form-control form-control-lg" type="password" placeholder="Password"/>
                 </div>
 
-                <div class="form-group">
+                <div class="form-group row mb-3 ">
                     <button class="btn btn-info btn-block">Login</button>
                 </div>
 
+                <div class="form-group row mb-3" align="right">
+                    <button class="btn btn-primary" @onclick="IncrementCount">SignUp</button>
+                </div>
+
+
             </EditForm>
-            <br/>
-        <button class="btn btn-primary" @onclick="IncrementCount">SignUp</button>
+           
+
         </div>
         
     </div>

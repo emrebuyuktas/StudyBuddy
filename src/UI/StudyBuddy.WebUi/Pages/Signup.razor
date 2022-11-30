@@ -11,10 +11,14 @@
 
         <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
 
-            <EditForm Model="@_signupDto" OnValidSubmit="signUpProcess"> 
-                 <DataAnnotationsValidator/> 
-            
-             <div class="row mb-3">
+            <EditForm Model="@_signupDto" OnValidSubmit="signUpProcess">
+                <DataAnnotationsValidator/>
+                <div class="form-group row mb-3">
+                    <img src="6681204.png" width="384" height="384" alt="Trulli">
+
+                </div>
+
+                <div class="row mb-3">
                     <label for="inputName3" class="col-sm-2 col-form-label">Name</label>
                     <div class="col-sm-10">
                         <input @bind-value="_signupDto.UserName" type="text" class="form-control" id="inputName3">
@@ -35,11 +39,10 @@
                 <fieldset class="row mb-3">
                     <legend class="col-form-label col-sm-2 pt-0">Tags</legend>
                     <div class="col-sm-10">
-                         @foreach (var item in taglist)
-                            {
-                                
-                                <div class="col-sm-10">
-                                    <div class="form-check">
+                        @foreach (var item in taglist)
+                        {
+                            <div class="col-sm-10">
+                                <div class="form-check">
                                         <input   class="form-check-input" type="checkbox" value="@item.Name" id="@item.Id" @onchange="eventArgs => { CheckboxClicked( item.Name,item.Id, eventArgs.Value); }">
                                         <label class="form-check-label" for="@item.Id">
                                             @item.Name
@@ -51,7 +54,7 @@
 
 
                 </fieldset>
-                            <div class="form-group row-4" align="right">
+                            <div class="form-group row mb-3" align="right">
                                 <button class="btn btn-info btn-block">SignUp</button>
                             </div>
              </EditForm> 
