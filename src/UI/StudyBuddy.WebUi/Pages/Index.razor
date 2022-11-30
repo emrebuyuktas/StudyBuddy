@@ -1,15 +1,41 @@
 ﻿@page "/test"
 @inject Blazored.LocalStorage.ILocalStorageService localStorage
 
-
-<h1>Counter</h1>
-<p>Current count: @counter</p>
-<h1>Chose tag</h1>
+<div class="pb-0" align="right">
+   
+       <div class="card-header">
+            <button class="btn btn-danger" style="color: black; " @onclick="Toggle">
+                <b>@CardHeaderTitle</b>
+                UserList
+            </button>
+            @CardHeader
+       </div>
+        @if (ShowCardBody)
+        {
+            <div class="card-body">
+                <p>asd</p>
+                <p>asdasd</p>
+            </div>
+        }
+    
+</div>
 
 
 
 @code
 {
+    [Parameter] public RenderFragment CardBody { get; set; }
+    [Parameter] public RenderFragment CardHeader { get; set; }
+    [Parameter] public string CardHeaderTitle { get; set; }
+
+
+    [Parameter] public bool ShowCardBody { get; set; } = false;
+    public string BtnClass => ShowCardBody ? "oi oi-collapse-up" : "oi oi-collapse-down";
+    public void Toggle()
+    {
+        ShowCardBody = !ShowCardBody;
+    }
+    
     private int counter = 0;
    
 
