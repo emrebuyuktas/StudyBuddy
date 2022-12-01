@@ -1,0 +1,120 @@
+﻿@page "/chat"
+@using Microsoft.AspNetCore.SignalR.Client
+@using StudyBuddy.WebUi.Models
+@inject NavigationManager Navigation
+@inject IJSRuntime JSRuntime
+@* @implements IAsyncDisposable *@
+
+<PageTitle>Chat</PageTitle>
+
+
+<textarea style="width: 100%; height: 500px;" @ref="TextAreaRef">
+        @messages
+            </textarea>
+<div class="input-group">
+    <input @bind-value="message"
+           @bind-value:event="oninput"
+           @onkeyup="HandleInput"
+           class="form-control">
+    <button class="btn btn-primary form-group-append"
+            @onclick="Send"
+            disabled="@(!IsConnected)">
+        Send
+    </button>
+</div>
+
+
+@code {
+    private HubConnection? hubConnection;
+    private string userInput = "emre";
+    private string? messageInput;
+    ElementReference TextAreaRef;
+    private string messages = string.Empty;
+    private string username = string.Empty;
+    private string message = string.Empty;
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await LocalStorageService.GetItemAsync<string>("token");
+        hubConnection = new HubConnectionBuilder()
+            .WithUrl(Navigation.ToAbsoluteUri("https://localhost:7165/ClassroomHub")
+                , opt => { opt.AccessTokenProvider = () => Task.FromResult(token); })
+            .Build();
+        await hubConnection.StartAsync();
+
+    #region GetFromSignalR
+
+        hubConnection.On<string, string>("Notification-classid", (message, id) =>
+        {
+            var msg = $"Emre-{message}-ClassId-{id}";
+            messages += msg + "\n";
+            JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
+            StateHasChanged();
+        });
+        
+        hubConnection.On<Message>("ReceiveMessage", (m) =>
+        {
+            var msg = $"emre-{m.Content}-{m.CreatedDate}";
+            messages += msg + "\n";
+            JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
+            StateHasChanged();
+        });
+
+    #endregion
+
+    #region SendToSignalR
+
+        await hubConnection.InvokeAsync("JoinClassroom", "classid");
+
+    #endregion
+    }
+
+
+    private async Task Send()
+    {
+        Console.WriteLine(message);
+        if (hubConnection != null)
+        {
+            await hubConnection.SendAsync("Send", new Message
+            {
+                GroupId = "classid",
+                Content = message,
+                CreatedDate = DateTime.Now
+            });
+            message = string.Empty;
+        }
+    }
+
+    private async Task HandleInput(KeyboardEventArgs args)
+    {
+        if (args.Key.Equals("Enter"))
+        {
+            await Send();
+        }
+    }
+
+
+    public async ValueTask DisposeAsync()
+    {
+        if (hubConnection != null)
+        {
+            await hubConnection.DisposeAsync();
+        }
+    }
+
+    [Inject]
+    ILocalStorageService LocalStorageService { get; set; }
+
+
+    public bool IsConnected =>
+        hubConnection?.State == HubConnectionState.Connected;
+
+    // public async ValueTask DisposeAsync()
+    // {
+    //     if (hubConnection is not null)
+    //     {
+    //         await hubConnection.DisposeAsync();
+    //     }
+    // }
+}

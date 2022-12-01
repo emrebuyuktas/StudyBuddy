@@ -14,8 +14,7 @@ builder.Services.AddCors(opt =>
 {
     opt.AddPolicy("CorsPolicy", builder =>
     {
-        //builder.WithOrigins("https://localhost:7196",";http://localhost:5196","https://localhost:7042").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
-        builder.AllowAnyOrigin().AllowAnyHeader().AllowAnyMethod();
+        builder.WithOrigins("https://localhost:7196",";http://localhost:5196","https://localhost:7042").AllowAnyHeader().AllowAnyMethod().AllowCredentials();
     });
 });
 builder.Services.AddSwaggerGen();
@@ -29,8 +28,8 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 app.UseHttpsRedirection();
-app.UseRouting();
 app.UseCors("CorsPolicy");
+app.UseRouting();;
 app.UseAuthentication();
 app.UseAuthorization();
 
