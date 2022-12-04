@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Authorization;
+﻿using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.SignalR;
 using StudyBuddy.SignalR.Helpers;
 using StudyBuddy.SignalR.Models;
@@ -22,7 +23,8 @@ public class ClassroomHub :  Hub
     {
         await Groups.AddToGroupAsync(Context.ConnectionId, id);
         //await Clients.OthersInGroup(id).SendAsync($"Notification-{id}","Emre has joined",id);
-        await Clients.Group(id).SendAsync($"Notification",$"{Context.UserIdentifier}");
+        var userId = Context.User.Claims.Where(x=>x.Type==ClaimTypes.NameIdentifier).SingleOrDefault().Value;
+        await Clients.Group(id).SendAsync($"Notification",$"{Context.UserIdentifier}",userId);
     }
     
     public async Task LeaveClassroom(string id)
@@ -32,7 +34,9 @@ public class ClassroomHub :  Hub
 
     public async Task Send(Message m)
     {
-        await Clients.Group(m.GroupId).SendAsync("ReceiveMessage", m,$"{Context.UserIdentifier}");
+        var userId = Context.User.Claims.Where(x=>x.Type==ClaimTypes.NameIdentifier).SingleOrDefault().Value;
+        await Clients.Group(m.GroupId).SendAsync("ReceiveMessage", m,$"{Context.UserIdentifier}",userId);
+        
     }
     
 }

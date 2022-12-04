@@ -1,5 +1,9 @@
 ﻿
     <style>
+    body{
+    background-color: #102464;
+    }
+
  .chat-room {
      border-collapse: collapse;
      border-spacing: 0;
@@ -22,33 +26,39 @@
 
 .chat-room .kiri-side {
     width: 25%;
-    background: #f6f6f6;
+    background: #F5FFFA;
     border-radius: 4px 0 0 4px;
     -webkit-border-radius: 4px 0 0 4px;
+    
 }
 .chat-room .tengah-side {
     width: 50%;
-    background: #f6f6f6;
-    border-right: 1px solid #e5e8ef;
+    background: #F5FFFA;
+    
+    
 }
 
 .chat-room .kanan-side {
     width: 25%;
-    background: #f6f6f6;
+    background: #F5FFFA;
+    
 }
 
 .chat-room .kiri-side .user-head {
-    background: #2980b9;
+    background: #102464; 
     color: #FFFFFF;
     min-height: 70px;
+        border-right: 1px solid #102464;
+
     padding: 15px;
+    
 }
 .chat-room .kanan-side .user-head {
-    background: #2980b9;
+    background: #102464;
     color: #FFFFFF;
     min-height: 70px;
     padding: 10px;
-    border-left: 1px solid #2980b9;
+    border-left: 1px solid #102464;
     margin-left: -1px;
     position: relative;
 }
@@ -67,7 +77,8 @@
 }
 
 .chat-room-head {
-    background: #3498db;
+    text-align: center;
+    background: #102464;
     color: #FFFFFF;
     min-height: 70px;
     padding: 15px;
@@ -195,6 +206,7 @@ ul.chat-user li a:hover{
     position: absolute;
     bottom: 0;
     border-top: 1px solid #E5E8EF;
+    border-right: 1px solid #E5E8EF;
 }
 
 .chat-room .kiri-side footer .chat-avatar img {
@@ -313,8 +325,8 @@ ul.chat-available-user li i {
 }
 
 .group-rom {
-    width: 100%;
-    float: left;
+    width: 51%;
+    float: right;
     border-bottom: 1px solid #eaebee;
 }
 
@@ -326,17 +338,19 @@ ul.chat-available-user li i {
 }
 
 .group-rom .first-part {
-    width: 25%;
+    width: 20%;
+        color: #6a6a6a;
+        font-weight: 600;
 }
 
 .group-rom .first-part.odd {
     background: #f7f8fa;
-    color: #6a6a6a;
-    font-weight: 600;
+
 }
 
 .group-rom .second-part{
-    width: 60%;
+    width: 50%;
+    word-wrap: break-word
 }
 
 .group-rom .third-part{

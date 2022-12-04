@@ -146,7 +146,9 @@
     }
     private async Task classroomProcess(string id)
     {
-        NavManager?.NavigateTo("/chat");
+        
+        NavManager
+            .NavigateTo($"/try/{id}");
 
     }
     

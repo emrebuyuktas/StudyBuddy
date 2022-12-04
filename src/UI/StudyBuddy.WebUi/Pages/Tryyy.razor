@@ -1,211 +1,149 @@
-﻿@page "/try"
+﻿@page "/try/{Id}"
 @using Microsoft.AspNetCore.SignalR.Client
 @using StudyBuddy.WebUi.Models
+@using System.Net.Http.Headers
+@using System.Security.Claims
+@using System.IdentityModel.Tokens.Jwt
 @inject NavigationManager Navigation
 @inject IJSRuntime JSRuntime
-
+@layout EmptyLayout
 <StudyBuddy.WebUi.CustomComponents.Chatcss></StudyBuddy.WebUi.CustomComponents.Chatcss>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
-<div class="container bootstrap snippets bootdey.com" >
-<div class="row" style="border: #0dcaf0 ">
-    <div class="col-md-12">
-        <!-- start:chat room -->
-        <div class="box">
-            <div class="chat-room">
-            <!-- start:aside kiri chat room -->
-            <aside class="kiri-side">
-                <div class="user-head">
-                    <i class="fa fa-comments-o"></i>
-                    <h3>Color Chat</h3>
-                </div>
-                <ul class="chat-list">
-                    <li class="">
-                        <h4>
-                                <i class="fa fa-list"></i>
-                                Rooms
-                            </h4>
-                        
-                    </li>
-                    <li>
-                        <a href="#chat_room.html">
-                            <i class="fa fa-rocket"></i>
-                            <span>Video</span>
-                            <i class="fa fa-times pull-right"></i>
-                        </a>
-                    </li>
-                    <li class="active">
-                        <a href="/try">
-                            <i class="fa fa-rocket"></i>
-                            <span>Chat</span>
-                            <i class="fa fa-times pull-right"></i>
-                        </a>
-                    </li>
-                    
-                </ul>
 
-            </aside>
- 
-            <aside class="tengah-side">
-                <div class="chat-room-head">
-                    <h3>Air Koler</h3>
-                    <form action="#" class="pull-right position">
-                        <input type="text" placeholder="Search" class="form-control search-btn ">
-                    </form>
-                </div>
-                <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 800px;">
-                    @* <div class="group-rom"> *@
-                    @*     <div class="first-part odd">Admin</div> *@
-                    @*     <div class="second-part">@message</div> *@
-                    @*     <div class="third-part">12:19</div> *@
-                    @* </div> *@
-                    @foreach (var item in messages)
-                    {
-                        <div class="group-rom">
-                            <div class="first-part odd">Emre Büyüktaş</div>
-                            <div class="second-part">@item</div>
-                            <div class="third-part">12:19</div>
+<div class="container bootstrap snippets bootdey.com">
+    
+    <div class="row">
+        <div class="col-md-12">
+            <!-- start:chat room -->
+            <div class="box">
+                <div class="chat-room">
+                    <!-- start:aside kiri chat room -->
+                    <aside class="kiri-side" >
+                        <div class="user-head" >
+                            <i class="fa fa-comments-o"></i>
+                            <h3>Color Chat</h3>
                         </div>
-                    }
+                        
+                        <ul class="chat-list">
+                            <li class="">
+                                <h4>
+                                    <i class="fa fa-list"></i>
+                                    Rooms
+                                </h4>
+
+                            </li>
+                            <li>
+                                <a href="#chat_room.html">
+                                    <i class="fa fa-rocket"></i>
+                                    <span>Video</span>
+                                    
+                                </a>
+                            </li>
+                            <li class="active">
+                                <a href="/try">
+                                    <i class="fa fa-rocket"></i>
+                                    <span>Chat</span>
+                                    
+                                </a>
+                            </li>
+
+                        </ul>
+                        
+                    </aside>
+
+                    <aside class="tengah-side">
+                        <div class="chat-room-head" >
+                            <h3>@_classroomDto?.Name</h3>
+                            <form action="#" class="pull-right position">
+                                <input type="text" placeholder="Search" class="form-control search-btn ">
+                            </form>
+                        </div>
+                        <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 700px;">
+                            @* <div class="group-rom"> *@
+                            @*     <div class="first-part odd">Admin</div> *@
+                            @*     <div class="second-part">@message</div> *@
+                            @*     <div class="third-part">12:19</div> *@
+                            @* </div> *@
+
+                            @if (_classroomDto is not null)
+                            {
+                                @foreach (var item in _classroomDto.Messages)
+                                {
+
+                                    <div class="group-rom">
+                                        <div class="first-part odd">@item.UserName</div>
+                                        <div class="second-part">@item.Content</div>
+                                        <div class="third-part">@item.CreatedDate</div>
+                                    </div>
+
+                                }
+                                @foreach (var item in userMessages)
+                                {
+
+                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#B0E0E6");float:@(@item.UserId == _userId ? " right" : "left")>
+                                        <div class="first-part">@item.UserName</div>
+                                        <div class="second-part">@item.Content</div>
+                                        <div class="third-part">@item.CreateDateTime</div>
+                                    </div>
+
+                                }
+                            }
+
+
+                        </div>
+                        <footer>
+                            <div class="chat-txt">
+                                <input type="text" @bind-value="message" @bind-value:event="oninput" @onkeyup="HandleInput" class="form-control">
+                            </div>
+                            <div class="btn-group">
+                                <button type="button" class="btn btn-white" data-original-title="" title=""><i class="fa fa-meh-o"></i></button>
+                                <button type="button" class="btn btn-white" data-original-title="" title=""><i class=" fa fa-paperclip"></i></button>
+                            </div>
+                            <button class="btn btn-danger" data-original-title="" title="" @onclick="Send" disabled="@(!IsConnected)">Send</button>
+                        </footer>
+                    </aside>
+                    <!-- end:aside tengah chat room -->
+
+                    <!-- start:aside kanan chat room -->
+                    <aside class="kanan-side">
+                        <div class="user-head">
+                            <h3>Online Users</h3>
+                        </div>
+                        <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 800px;">
+                            <ul class="chat-available-user">
+                                @if (_classroomDto is not null)
+                                {
+                                    @foreach (var item in _classroomDto.AppUsers)
+                                    {
+                                        <li>
+                                            <a href="#chat-room.html">
+                                                <i class="fa fa-circle text-success"></i>
+                                                @item.userName
+                                                <span class="text-muted">3h:22m</span>
+                                            </a>
+                                        </li>
+                                    }
+                                }
+
+                            </ul>
+                        </div>
+                    </aside>
+
+
                 </div>
-                <footer>
-                    <div class="chat-txt">
-                        <input type="text" @bind-value="message" @bind-value:event="oninput" @onkeyup="HandleInput" class="form-control">
-                    </div>
-                    <div class="btn-group">
-                        <button type="button" class="btn btn-white" data-original-title="" title=""><i class="fa fa-meh-o"></i></button>
-                        <button type="button" class="btn btn-white" data-original-title="" title=""><i class=" fa fa-paperclip"></i></button>
-                    </div>
-                    <button class="btn btn-danger" data-original-title="" title=""  @onclick="Send" disabled="@(!IsConnected)">Send</button>
-                </footer>
-            </aside>
-            <!-- end:aside tengah chat room -->
-
-            <!-- start:aside kanan chat room -->
-            <aside class="kanan-side">
-                <div class="user-head">
-                    <h3>Online Users</h3>
-                </div>
-            <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 800px;">
-            <ul class="chat-available-user">
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-success"></i>
-                        Jonathan Smith
-                        <span class="text-muted">3h:22m</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-success"></i>
-                        Jhone Due
-                        <span class="text-muted">1h:2m</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-success"></i>
-                        Cendy Andrianto
-                        <span class="text-muted">2h:32m</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-danger"></i>
-                        Surya Nug
-                        <span class="text-muted">3h:22m</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-warning"></i>
-                        Monke Lutfy
-                        <span class="text-muted">1h:12m</span>
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Steve Jobs
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                <li>
-                    <a href="#chat-room.html">
-                        <i class="fa fa-circle text-muted"></i>
-                        Jonathan Smith
-                        <!--<span class="text-muted">3h:22m</span>-->
-                    </a>
-                </li>
-                
-            </ul>
             </div>
-            </aside>
-
-
-            </div>
+            <!-- end:chat room -->
         </div>
-        <!-- end:chat room -->
     </div>
-</div>
 </div>
 
 @code {
+    [Inject]
+    HttpClient? Client { get; set; }
+    [Inject]
+    NavigationManager? NavManager { get; set; }
+    [Parameter]
+    public string? Id { get; set; }
     private HubConnection? hubConnection;
     private string userInput = "emre";
     private string? messageInput;
@@ -213,11 +151,29 @@
     private string messages = string.Empty;
     private string username = string.Empty;
     private string message = string.Empty;
-
-
+    private ClassroomDto _classroomDto;
+    private List<UserMessage> userMessages = new();
+    private string name = "";
+    private string _userId="";
+    private bool isForegin = false;
     protected override async Task OnInitializedAsync()
-    {
+    {            
+        name = await LocalStorageService.GetItemAsync<string>("userName");
+        
         var token = await LocalStorageService.GetItemAsync<string>("token");
+        _userId= new JwtSecurityToken(token).Claims.First(c => c.Type == ClaimTypes.NameIdentifier).Value;
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var httpRequest = await Client.GetServiceResponseAsync<ClassroomDto>($"https://localhost:7042/api/Classroom/enter?classroomId={Id}");
+
+        // if (httpRequest.StatusCode != 201)
+        // {
+        //     await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
+        // }
+        _classroomDto = httpRequest.Data;
+        
+        
+        
         hubConnection = new HubConnectionBuilder()
             .WithUrl(Navigation.ToAbsoluteUri("https://localhost:7165/ClassroomHub")
                 , opt => { opt.AccessTokenProvider = () => Task.FromResult(token); })
@@ -226,19 +182,19 @@
 
     #region GetFromSignalR
 
-        hubConnection.On<string, string>("Notification-classid", (message, id) =>
+        hubConnection.On<string,string>("Notification", (userName,userId) =>
         {
-            var msg = $"Emre-{message}-ClassId-{id}";
+            var msg = $"{userName} has joined";
             messages += msg + "\n";
             JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
             StateHasChanged();
         });
         
-        hubConnection.On<Message>("ReceiveMessage", (m) =>
+        hubConnection.On<Message,string,string>("ReceiveMessage", (m,userName,userId) =>
         {
-            var msg = $"emre-{m.Content}-{m.CreatedDate}";
-            messages += msg + "\n";
-            JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
+            userMessages.Add(new UserMessage{Content = m.Content,CreateDateTime = m.CreatedDate,UserName = userName,UserId = userId});
+            
+
             StateHasChanged();
         });
 
@@ -263,6 +219,8 @@
                 Content = message,
                 CreatedDate = DateTime.Now
             });
+            
+            
             message = string.Empty;
         }
     }
@@ -272,6 +230,7 @@
         if (args.Key.Equals("Enter"))
         {
             await Send();
+            
         }
     }
 
