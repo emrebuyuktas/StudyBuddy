@@ -43,7 +43,8 @@ public class GetClassroomByUserQueryHandler : RequestHandlerBase<GetClassroomByU
         {
             Content = x.Content,
             CreatedDate = x.CreatedDate,
-            UserName = x.User.UserName
+            UserName = x.User.UserName,
+            UserId = x.UserId
         }).ToList();
         return Response<ClassroomDto>.Success(new ClassroomDto
         {

@@ -70,8 +70,8 @@
                                 @foreach (var item in _classroomDto.Messages)
                                 {
 
-                                    <div class="group-rom">
-                                        <div class="first-part odd">@item.UserName</div>
+                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#B0E0E6");float:@(@item.UserId == _userId ? " right" : "left")>
+                                        <div class="first-part">@item.UserName</div>
                                         <div class="second-part">@item.Content</div>
                                         <div class="third-part">@item.CreatedDate</div>
                                     </div>
@@ -202,7 +202,7 @@
 
     #region SendToSignalR
 
-        await hubConnection.InvokeAsync("JoinClassroom", "classid");
+        await hubConnection.InvokeAsync("JoinClassroom", Id);
 
     #endregion
     }
@@ -215,11 +215,17 @@
         {
             await hubConnection.SendAsync("Send", new Message
             {
-                GroupId = "classid",
+                GroupId = Id,
                 Content = message,
                 CreatedDate = DateTime.Now
             });
             
+            Client.PostGetServiceResponseAsync<NoDataDto,SaveMessageDto>("https://localhost:7042/api/Message/save",new SaveMessageDto
+            {
+                ClassroomId = Id,
+                Content = message,
+                CreatedDate = DateTime.Now
+            });
             
             message = string.Empty;
         }
