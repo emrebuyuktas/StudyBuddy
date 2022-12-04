@@ -45,17 +45,17 @@
 
     #region GetFromSignalR
 
-        hubConnection.On<string, string>("Notification-classid", (message, id) =>
+        hubConnection.On<string>("Notification", (userName) =>
         {
-            var msg = $"Emre-{message}-ClassId-{id}";
+            var msg = $"{userName} has joined";
             messages += msg + "\n";
             JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
             StateHasChanged();
         });
         
-        hubConnection.On<Message>("ReceiveMessage", (m) =>
+        hubConnection.On<Message,string>("ReceiveMessage", (m,userName) =>
         {
-            var msg = $"emre-{m.Content}-{m.CreatedDate}";
+            var msg = $"{userName}-{m.Content}-{m.CreatedDate}";
             messages += msg + "\n";
             JSRuntime.InvokeVoidAsync("scrollToBottom", TextAreaRef);
             StateHasChanged();

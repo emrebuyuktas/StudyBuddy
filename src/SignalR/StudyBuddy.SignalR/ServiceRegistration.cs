@@ -1,4 +1,5 @@
-﻿using StudyBuddy.SignalR.Helpers;
+﻿using Microsoft.AspNetCore.SignalR;
+using StudyBuddy.SignalR.Helpers;
 
 namespace StudyBuddy.SignalR;
 
@@ -9,5 +10,6 @@ public static class ServiceRegistration
         services.Configure<CustomTokenOption>(configuration.GetSection("TokenOption"));
         var tokenOptions = configuration.GetSection("TokenOption").Get<CustomTokenOption>();
         services.AddCustomTokenAuth(tokenOptions);
+        services.AddSingleton<IUserIdProvider, UserNameProvider>();
     }
 }

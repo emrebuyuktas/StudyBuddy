@@ -23,6 +23,7 @@
     <ItemGroup>
       <Folder Include="Controllers\Auth" />
       <Folder Include="Controllers\Classroom" />
+      <Folder Include="Controllers\Message" />
       <Folder Include="Controllers\User" />
     </ItemGroup>
 
