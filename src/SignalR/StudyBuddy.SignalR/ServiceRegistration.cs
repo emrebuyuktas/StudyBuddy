@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.SignalR;
 using StudyBuddy.SignalR.Helpers;
+using StudyBuddy.SignalR.Services;
 
 namespace StudyBuddy.SignalR;
 
@@ -11,5 +12,6 @@ public static class ServiceRegistration
         var tokenOptions = configuration.GetSection("TokenOption").Get<CustomTokenOption>();
         services.AddCustomTokenAuth(tokenOptions);
         services.AddSingleton<IUserIdProvider, UserNameProvider>();
+        services.AddSingleton<TwilioService>();
     }
 }
