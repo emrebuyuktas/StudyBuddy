@@ -1,0 +1,147 @@
+﻿@page "/createClassroom"
+@using StudyBuddy.WebUi.Models
+@using StudyBuddy.WebUi.Utils
+@using StudyBuddy.WebUi.Wrappers
+@using System.Net.Http.Headers
+@layout StudyBuddy.WebUi.Shared.EmptyLayout
+
+
+<body>
+<div class="container-fluid h-100">
+    <div class="row justify-content-center align-items-center h-100">
+
+        <div class="col col-sm-6 col-md-6 col-lg-4 col-xl-3">
+
+            <EditForm Model="@_createClass" OnValidSubmit="CreateClassProcess">
+                <DataAnnotationsValidator/>
+                <div class="form-group row mb-3">
+                    <img src="classimage.png" width="384" height="384" alt="Trulli">
+
+                </div>
+
+                <div class="row mb-3">
+                    <label for="inputName3" class="col-sm-2 col-form-label">Class Name</label>
+                    <div class="col-sm-10">
+                        <input @bind-value="_createClass.Name" type="text" class="form-control" id="inputName3">
+                    </div>
+                </div>
+
+
+                <fieldset class="row mb-3">
+                    <legend class="col-form-label col-sm-2 pt-0">Tags</legend>
+                    <div class="col-sm-10">
+                        @foreach (var item in taglist)
+                        {
+                            <div class="col-sm-10">
+
+                                <div class="form-check">
+                                    <input class="form-check-input" name="check" type="checkbox" id="@item.Id" onclick="onlyOne(this)" @onchange="eventArgs => { CheckboxClicked(item.Name, item.Id); }">
+                                    <label class="form-check-label" for="@item.Id">
+                                        @item.Name
+                                    </label>
+                                </div>
+                                
+                                
+
+
+                            </div>
+                            }
+                    </div>
+
+
+                </fieldset>
+                            <div class="form-group row mb-3" align="right">
+                                <button class="btn btn-info btn-block">Create Class</button>
+                            </div>
+             </EditForm> 
+
+
+            
+            
+            
+
+        </div>
+
+    </div>
+</div>
+</body>
+@code {
+       [Inject]
+    HttpClient? Client { get; set; }
+
+    [Inject]
+    NavigationManager? NavManager { get; set; }
+
+    [Inject]
+    ModalManager? ModalManager { get; set; }
+
+    [Inject]
+    ILocalStorageService? LocalStorageService { get; set; }
+
+    [Inject]
+    AuthenticationStateProvider? AuthenticationStateProvider { get; set; }
+
+    private CreateClassDto _createClass = new();
+
+    [Parameter]
+    public string Value { get; set; }
+
+    
+
+    List<TagDto> taglist=new ();
+
+
+    String loadingMessage = "Loading...";
+
+    protected override async Task OnInitializedAsync()
+    {
+        var res = (await Client.GetServiceResponseAsync<List<TagDto>>("https://localhost:7042/api/Tag/all", true));
+        if (res.StatusCode != 200)
+        {
+            Console.WriteLine(res.Error.Errors.First());
+        }
+        else
+        {
+            taglist = res.Data;
+        }
+    }
+    
+    
+    void CheckboxClicked(string name,int id)
+    {
+        
+            _createClass.Tag = new TagDto
+            {
+                Id = id,
+                Name = name
+            };
+        
+       
+    }
+    
+    
+    private async Task CreateClassProcess()
+    {
+        
+        var token = await LocalStorageService.GetItemAsync<string>("token");
+        Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+
+        var httpRequest = await Client.PostGetServiceResponseAsync<ClassroomDto, CreateClassDto>("https://localhost:7042/api/Classroom/create", _createClass);
+
+
+        if (httpRequest.StatusCode != 201)
+        {
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
+        }
+
+
+        else
+        {
+            
+            NavManager
+                .NavigateTo("/classes");
+
+        }
+    }
+
+}

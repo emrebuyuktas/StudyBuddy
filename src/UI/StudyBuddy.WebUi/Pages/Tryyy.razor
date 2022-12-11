@@ -10,9 +10,9 @@
 <StudyBuddy.WebUi.CustomComponents.Chatcss></StudyBuddy.WebUi.CustomComponents.Chatcss>
 <link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet">
 
-<div class="container bootstrap snippets bootdey.com">
+
     
-    <div class="row">
+    
         <div class="col-md-12">
             <!-- start:chat room -->
             <div class="box">
@@ -21,7 +21,7 @@
                     <aside class="kiri-side" >
                         <div class="user-head" >
                             <i class="fa fa-comments-o"></i>
-                            <h3>Color Chat</h3>
+                            <h3>StudyBuddy</h3>
                         </div>
                         
                         <ul class="chat-list">
@@ -39,7 +39,7 @@
                                     
                                 </a>
                             </li>
-                            <li class="active">
+                            <li >
                                 <a href="/try">
                                     <i class="fa fa-rocket"></i>
                                     <span>Chat</span>
@@ -58,7 +58,7 @@
                                 <input type="text" placeholder="Search" class="form-control search-btn ">
                             </form>
                         </div>
-                        <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 700px;">
+                        <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 890px;">
                             @* <div class="group-rom"> *@
                             @*     <div class="first-part odd">Admin</div> *@
                             @*     <div class="second-part">@message</div> *@
@@ -70,7 +70,7 @@
                                 @foreach (var item in _classroomDto.Messages)
                                 {
 
-                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#B0E0E6");float:@(@item.UserId == _userId ? " right" : "left")>
+                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#FA8072");float:@(@item.UserId == _userId ? " right" : "left")>
                                         <div class="first-part">@item.UserName</div>
                                         <div class="second-part">@item.Content</div>
                                         <div class="third-part">@item.CreatedDate</div>
@@ -80,7 +80,7 @@
                                 @foreach (var item in userMessages)
                                 {
 
-                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#B0E0E6");float:@(@item.UserId == _userId ? " right" : "left")>
+                                    <div class="group-rom" style=background-color:@(@item.UserId == _userId ? " #DEB887" : "#FA8072");float:@(@item.UserId == _userId ? " right" : "left")>
                                         <div class="first-part">@item.UserName</div>
                                         <div class="second-part">@item.Content</div>
                                         <div class="third-part">@item.CreateDateTime</div>
@@ -109,7 +109,7 @@
                         <div class="user-head">
                             <h3>Online Users</h3>
                         </div>
-                        <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 800px;">
+                        <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 890px;">
                             <ul class="chat-available-user">
                                 @if (_classroomDto is not null)
                                 {
@@ -134,8 +134,8 @@
             </div>
             <!-- end:chat room -->
         </div>
-    </div>
-</div>
+    
+
 
 @code {
     [Inject]

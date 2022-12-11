@@ -1,8 +1,5 @@
 ﻿
     <style>
-    body{
-    background-color: #102464;
-    }
 
  .chat-room {
      border-collapse: collapse;
@@ -26,22 +23,24 @@
 
 .chat-room .kiri-side {
     width: 25%;
-    background: #F5FFFA;
+    background: #102464;
     border-radius: 4px 0 0 4px;
     -webkit-border-radius: 4px 0 0 4px;
     
 }
 .chat-room .tengah-side {
     width: 50%;
-    background: #F5FFFA;
+    background: #AABDD6;
+    border-left: 1px solid #102464;
     
     
 }
 
 .chat-room .kanan-side {
     width: 25%;
-    background: #F5FFFA;
-    
+    background: #102464;
+    text-align: center;
+    color: #FFFFFF;
 }
 
 .chat-room .kiri-side .user-head {
@@ -55,6 +54,7 @@
 }
 .chat-room .kanan-side .user-head {
     background: #102464;
+    text-align: center;
     color: #FFFFFF;
     min-height: 70px;
     padding: 10px;
@@ -189,13 +189,14 @@ ul.chat-user li a:hover{
 }
 
 .chat-room .tengah-side footer {
-    background: #f6f6f6;
+    background: #AABDD6;
     padding: 15px;
     height: 70px;
     width: 50%;
     position: absolute;
     bottom: 0;
     border-right: 1px solid #E5E8EF;
+    border-left: 1px solid #E5E8EF;
 }
 
 .chat-room .kanan-side footer {
@@ -206,7 +207,7 @@ ul.chat-user li a:hover{
     position: absolute;
     bottom: 0;
     border-top: 1px solid #E5E8EF;
-    border-right: 1px solid #E5E8EF;
+    border-right: 1px solid #102464;
 }
 
 .chat-room .kiri-side footer .chat-avatar img {
