@@ -1,6 +1,7 @@
 ﻿using AutoMapper;
 using MediatR;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Helpers;
@@ -24,16 +25,27 @@ public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomC
     private readonly IMapper _mapper;
     private readonly IApplicationDbContext _dbContext;
     private readonly IMongoDbRepository<Moderator> _moderatorRepo;
-    public CreateClassroomCommandHandler(IMapper mapper, IApplicationDbContext dbContext,IHttpContextAccessor contextAccessor, IMongoDbRepository<Moderator> moderatorRepo):base(contextAccessor)
+    private readonly UserManager<AppUser> _userManager;
+    public CreateClassroomCommandHandler(IMapper mapper, IApplicationDbContext dbContext,IHttpContextAccessor contextAccessor, IMongoDbRepository<Moderator> moderatorRepo, UserManager<AppUser> userManager):base(contextAccessor)
     {
         _mapper = mapper;
         _dbContext = dbContext;
         _moderatorRepo = moderatorRepo;
+        _userManager = userManager;
     }
 
     public override async Task<Response<ClassroomDto>> Handle(CreateClassroomCommand request, CancellationToken cancellationToken)
     {
         var classroom = new Domain.Entities.Classroom{Name = request.Name};
+        var user = await _userManager.FindByIdAsync(UserId);
+        classroom.Users.Add(new UserClassroom
+        {
+            AppUser = user,
+            Classroom = classroom,
+            ClassroomId = classroom.Id,
+            JoinDate = DateTime.Now,
+            UserId = UserId
+        });
         classroom.Tag = await _dbContext.Tags.Where(x =>x.Id==request.Tag.Id).SingleAsync(cancellationToken: cancellationToken);
         var result = await _dbContext.Classrooms.AddAsync(classroom, cancellationToken);
         await _dbContext.SaveChangesAsync();
