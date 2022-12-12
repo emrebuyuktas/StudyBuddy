@@ -7,6 +7,6 @@ public class Classroom
     public string Name { get; set; }
     public List<Message> Messages { get; set; }
     //public virtual List<AppUser> Users { get; set; }
-    public virtual ICollection<UserClassroom> Users { get; set; }
+    public virtual List<UserClassroom> Users { get; set; } = new();
     public Tag Tag { get; set; }
 }

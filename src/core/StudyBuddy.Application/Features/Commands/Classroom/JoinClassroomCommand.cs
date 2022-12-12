@@ -41,7 +41,8 @@ public class JoinClassroomCommandHandler : RequestHandlerBase<JoinClassroomComma
             UserId = user.Id,
             ClassroomId = classroom.Id,
             Classroom = classroom,
-            AppUser = user
+            AppUser = user,
+            JoinDate = DateTime.Now
         });
         await _dbContext.SaveChangesAsync();
         var userDtoList = new List<UserDto>();
