@@ -2,6 +2,7 @@
 @using StudyBuddy.WebUi.Models
 @using StudyBuddy.Application.Dtos
 @using System.Net.Http.Headers
+@using MudBlazor
 <style>
  
     .card {
@@ -44,6 +45,18 @@
         color: #a5aec0
     }
 </style>
+    <div class="row">
+        <div class="col-md-5 mx-auto">
+            <div class="input-group">
+                <input @bind-value="_searchText" class="form-control border-end-0 border rounded-pill" type="search" id="example-search-input">
+                <span class="input-group-append">
+                    <button @onclick="async () => await Search()" class="btn btn-outline-secondary bg-white border-bottom-0 border rounded-pill ms-n5" type="button">
+                        <i class="fa fa-search"></i>
+                    </button>
+                </span>
+            </div>
+        </div>
+    </div>
 <div class="container mt-5 mb-3">
     <div class="row">
         <h3>Classrooms</h3>
@@ -81,11 +94,42 @@
 
 
 
-        }}
+        }
+            
+            <MudPagination Color="Color.Primary" Count="@totalPage" @bind-Selected="@_selected"/>
+            
+            <MudText Align="Align.Center">Selected page: @_selected</MudText>
+        }
+        else
+        {
+            <div class="card text-center">
+                <div class="card-header">
+                    Ooops!
+                </div>
+                <div class="card-body">
+                    <h5 class="card-title">We couldn't find anything to suggest</h5>
+                    <p class="card-text">We couldn't find anything to suggest.You can create a class based on your interest or you can search.</p>
+                    <a href="/createClassroom" class="btn btn-primary">Create</a>
+                </div>
+                <div class="card-footer text-muted">
+                    2 days ago
+                </div>
+            </div>
+        }
     </div>
 </div>
 
+
+
 @code {
+    
+    private int totalPage = 1;
+    private int currentPage = 1;
+    private int pageSize = 10;
+    private int _selected = 1;
+    
+    private string _searchText = "";
+    
     [CascadingParameter]
     IModalService Modal { get; set; }
 
@@ -143,6 +187,14 @@
             
         }
         
+    }
+
+    protected async Task Search()
+    {
+        if (!string.IsNullOrEmpty(_searchText))
+        {
+            var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Classroom/related", true));
+        }
     }
     private async Task classroomProcess(string id)
     {

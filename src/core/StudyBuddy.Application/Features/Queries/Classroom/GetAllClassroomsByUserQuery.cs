@@ -42,6 +42,7 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
             ClassroomName = x.Classroom.Name,
             Tag = _mapper.Map<TagDto>(x.Classroom.Tag)
         }).ToListAsync(cancellationToken: cancellationToken);
-        return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page,rooms.Count/ request.Take);
+        var count = _dbContext.UserClassrooms.Count();
+        return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page, (int)Math.Ceiling(((double)_dbContext.UserClassrooms.Count()/ request.Take)));
     }
 }

@@ -1,5 +1,6 @@
 ﻿@page "/videochat/{Id}"
 @using Microsoft.AspNetCore.SignalR.Client
+@using MudBlazor
 @using StudyBuddy.WebUi.Interop
 @using StudyBuddy.WebUi.Models.VideoChat
 
@@ -8,7 +9,7 @@
 <div class="row h-100 pt-5">
     <div class="col-3">
         <div class="jumbotron p-4">
-            <Cameras CameraChanged="OnCameraChanged" />
+            <Cameras CameraChanged="OnCameraChanged"/>
             <h5><i class="fas fa-video"></i> Rooms</h5>
             <div class="list-group">
                 @* <div class="list-group-item d-flex justify-content-between align-items-center"> *@
@@ -26,9 +27,9 @@
                 @*     </div> *@
                 @* </div> *@
 
-                    <div class="list-group-item d-flex justify-content-between align-items-center">
-                        <button class="btn btn-lg twilio-btn-red w-100" @onclick="@(async _ => await OnLeaveRoom())">Leave Room?</button>
-                    </div>
+                <div class="list-group-item d-flex justify-content-between align-items-center">
+                    <button class="btn btn-lg twilio-btn-red w-100" @onclick="@(async _ => await OnLeaveRoom())">Leave Room?</button>
+                </div>
             </div>
         </div>
     </div>
@@ -39,18 +40,30 @@
             </div>
         </div>
     </div>
+    <MudSnackbarProvider></MudSnackbarProvider>
+    @inject ISnackbar Snackbar;
+    @if (_activeRoom is not null)
+    {
+        
+        @Snackbar.Add("Joined room", Severity.Success)
+    }
+
 </div>
+
 @code {
-    [Inject] 
+    
+    [Inject]
     protected IJSRuntime? JavaScript { get; set; }
-    [Inject] 
+
+    [Inject]
     protected NavigationManager NavigationManager { get; set; } = null!;
+
     [Inject]
     protected HttpClient Http { get; set; } = null!;
-    
+
     [Parameter]
     public string? Id { get; set; }
-    
+
 
     List<RoomDetails> _rooms = new List<RoomDetails>();
 
@@ -65,28 +78,26 @@
 
         if (Id is not null)
         {
-            var res= await TryJoinRoom();
+            var res = await TryJoinRoom();
             if (res)
             {
                 Console.WriteLine($"Joined room -- {_roomName}");
                 Console.WriteLine($"Joined room -- {_activeRoom}");
             }
         }
-        
-
     }
 
     async ValueTask OnLeaveRoom()
     {
         await JavaScript.LeaveRoomAsync();
-        // await _hubConnection.InvokeAsync(HubEndpoints.RoomsUpdated, _activeRoom = null);
+    // await _hubConnection.InvokeAsync(HubEndpoints.RoomsUpdated, _activeRoom = null);
         if (!string.IsNullOrWhiteSpace(_activeCamera))
         {
             await JavaScript.StartVideoAsync(_activeCamera, "#camera");
         }
     }
 
-    async Task OnCameraChanged(string activeCamera) => 
+    async Task OnCameraChanged(string activeCamera) =>
         await InvokeAsync(() => _activeCamera = activeCamera);
 
     async Task OnRoomAdded(string roomName) =>
@@ -98,17 +109,17 @@
 
     protected async ValueTask TryAddRoom(object args)
     {
-        // if (_roomName.IsNullOrEmpty())
-        // {
-        //     return;
-        // }
+    // if (_roomName.IsNullOrEmpty())
+    // {
+    //     return;
+    // }
 
         var takeAction = args switch
         {
             KeyboardEventArgs keyboard when keyboard.Key == "Enter" => true,
             MouseEventArgs _ => true,
             _ => false
-        };
+            };
 
         if (takeAction)
         {
@@ -122,10 +133,10 @@
 
     protected async ValueTask<bool> TryJoinRoom()
     {
-        // if (roomName.IsNullOrEmpty())
-        // {
-        //     return false;
-        // }
+    // if (roomName.IsNullOrEmpty())
+    // {
+    //     return false;
+    // }
 
         var jwt = await Http.GetFromJsonAsync<TwilioJwt>("https://localhost:7165/api/twilio/token");
         if (jwt?.Token is null)
@@ -141,4 +152,5 @@
 
         return joined;
     }
+
 }
