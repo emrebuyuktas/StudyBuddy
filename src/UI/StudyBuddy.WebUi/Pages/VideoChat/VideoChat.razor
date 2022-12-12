@@ -37,7 +37,7 @@
                 {
                     @foreach (var room in _rooms!)
                     {
-                        <a href="#" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
+                        <a href="/videochat" class="list-group-item list-group-item-action d-flex justify-content-between align-items-center
                            @(room.Name == _activeRoom ? "active" : null)"
                            @onclick="@(async _ => await TryJoinRoom(room.Name))">
                             @room.Name

@@ -25,22 +25,22 @@
                         </div>
                         
                         <ul class="chat-list">
-                            <li class="">
-                                <h4>
-                                    <i class="fa fa-list"></i>
+                            <li >
+                                <h5 style="color: white; text-align: center">
+                                    
                                     Rooms
-                                </h4>
+                                </h5>
 
                             </li>
                             <li>
-                                <a href="#chat_room.html">
+                                <a href="/videochat">
                                     <i class="fa fa-rocket"></i>
                                     <span>Video</span>
                                     
                                 </a>
                             </li>
                             <li >
-                                <a href="/try">
+                                <a href="#">
                                     <i class="fa fa-rocket"></i>
                                     <span>Chat</span>
                                     
@@ -58,7 +58,7 @@
                                 <input type="text" placeholder="Search" class="form-control search-btn ">
                             </form>
                         </div>
-                        <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 890px;">
+                        <div class="portlet-body chat-widget" @ref="TextAreaRef" style="overflow-y: auto; width: auto; height: 775px;">
                             @* <div class="group-rom"> *@
                             @*     <div class="first-part odd">Admin</div> *@
                             @*     <div class="second-part">@message</div> *@
@@ -92,14 +92,17 @@
 
                         </div>
                         <footer>
-                            <div class="chat-txt">
-                                <input type="text" @bind-value="message" @bind-value:event="oninput" @onkeyup="HandleInput" class="form-control">
+                            <div class="chat-txt" >
+                                <input style="height: 80px" type="text" @bind-value="message" @bind-value:event="oninput" @onkeyup="HandleInput" class="form-control">
+                                
                             </div>
+                        
                             <div class="btn-group">
                                 <button type="button" class="btn btn-white" data-original-title="" title=""><i class="fa fa-meh-o"></i></button>
                                 <button type="button" class="btn btn-white" data-original-title="" title=""><i class=" fa fa-paperclip"></i></button>
                             </div>
                             <button class="btn btn-danger" data-original-title="" title="" @onclick="Send" disabled="@(!IsConnected)">Send</button>
+
                         </footer>
                     </aside>
                     <!-- end:aside tengah chat room -->
@@ -116,11 +119,11 @@
                                     @foreach (var item in _classroomDto.AppUsers)
                                     {
                                         <li>
-                                            <a href="#chat-room.html">
-                                                <i class="fa fa-circle text-success"></i>
-                                                @item.userName
-                                                <span class="text-muted">3h:22m</span>
-                                            </a>
+                                           
+                                                <h5 style="text-align: left; margin-left: 60px">  @item.userName</h5>
+                                                
+                                                @* <span class="text-muted">3h:22m</span> *@
+                                          
                                         </li>
                                     }
                                 }
