@@ -38,21 +38,26 @@ public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomC
     {
         var classroom = new Domain.Entities.Classroom{Name = request.Name};
         var user = await _userManager.FindByIdAsync(UserId);
-        classroom.Users.Add(new UserClassroom
-        {
-            AppUser = user,
-            Classroom = classroom,
-            ClassroomId = classroom.Id,
-            JoinDate = DateTime.Now,
-            UserId = UserId
-        });
         classroom.Tag = await _dbContext.Tags.Where(x =>x.Id==request.Tag.Id).SingleAsync(cancellationToken: cancellationToken);
         var result = await _dbContext.Classrooms.AddAsync(classroom, cancellationToken);
+        classroom.Users.Add(new UserClassroom
+        {
+            UserId = user.Id,
+            ClassroomId = classroom.Id,
+            Classroom = classroom,
+            AppUser = user,
+            JoinDate = DateTime.Now
+        });
         await _dbContext.SaveChangesAsync();
         await _moderatorRepo.InsertOneAsync(new Moderator { Id = classroom.Id.ToString().ToModeratorId(UserId)});
+        var userDtoList = new List<UserDto>();
+        foreach (var classroomUser in classroom.Users)
+        {
+            userDtoList.Add(_mapper.Map<UserDto>(classroomUser.AppUser));
+        }
         var classroomDto = new ClassroomDto
         {
-            AppUsers = _mapper.Map<List<UserDto>>(classroom.Users),
+            AppUsers =userDtoList,
             Messages = _mapper.Map<List<MessageDto>>(classroom.Messages),
             Id = classroom.Id,
             Name = classroom.Name,
