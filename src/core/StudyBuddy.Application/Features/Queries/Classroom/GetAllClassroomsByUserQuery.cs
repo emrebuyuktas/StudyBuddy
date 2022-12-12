@@ -11,6 +11,14 @@ namespace StudyBuddy.Application.Features.Queries.Classroom;
 
 public class GetAllClassroomsByUserQuery : IRequest<Response<List<UserClassroomDto>>>
 {
+    public int Take { get; }
+    public int Page { get; }
+    
+    public GetAllClassroomsByUserQuery(int take, int page)
+    {
+        Take = take;
+        Page = page;
+    }
 }
 
 public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClassroomsByUserQuery, Response<List<UserClassroomDto>>>
@@ -26,14 +34,14 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
 
     public override async Task<Response<List<UserClassroomDto>>> Handle(GetAllClassroomsByUserQuery request, CancellationToken cancellationToken)
     {
-        var rooms = ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
-            Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser)).Select(x=>new UserClassroomDto
+        var rooms = await ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
+            Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser)).Skip((request.Page - 1) * request.Take).Take(request.Take).Select(x=>new UserClassroomDto
         {
             ClassroomId = x.ClassroomId.ToString(),
             UserName = x.AppUser.UserName,
             ClassroomName = x.Classroom.Name,
             Tag = _mapper.Map<TagDto>(x.Classroom.Tag)
-        });
-        return Response<List<UserClassroomDto>>.Success(await rooms.ToListAsync(cancellationToken: cancellationToken),200);
+        }).ToListAsync(cancellationToken: cancellationToken);
+        return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page,rooms.Count/ request.Take);
     }
 }

@@ -32,10 +32,10 @@ namespace StudyBuddy.API.Controllers.Classroom
             return ActionResult(result);
         }
 
-        [HttpGet("user")]
-        public async Task<IActionResult> GetClassroomsByUser()
+        [HttpGet("user/{take}/{page}")]
+        public async Task<IActionResult> GetClassroomsByUser(int take, int page)
         {
-            var result = await _mediator.Send(new GetAllClassroomsByUserQuery());
+            var result = await _mediator.Send(new GetAllClassroomsByUserQuery(take,page));
             return ActionResult(result);
         }
         

@@ -11,6 +11,10 @@ public class Response<T>
     public long? Take { get; private set; }
     public int? Page { get; private set; }
     public int? TotalPage { get; private set; }
+    
+    public bool? HasPrevious => Page > 1;
+    public bool? HasNext => Page < TotalPage;
+    
 
     public static Response<T> Success(T data, int statusCode)
     {
