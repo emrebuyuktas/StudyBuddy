@@ -9,7 +9,7 @@ using StudyBuddy.Application.Wrappers;
 
 namespace StudyBuddy.Application.Features.Queries.Classroom;
 
-public class SearchClassroomQuery : IRequest<Response<List<ClassroomDto>>>
+public class SearchClassroomQuery : IRequest<Response<List<ClassroomListDto>>>
 {
     public int Take { get; }
     public int Page { get; }
@@ -24,7 +24,7 @@ public class SearchClassroomQuery : IRequest<Response<List<ClassroomDto>>>
     }
 }
 
-public class SearchClassroomQueryHandler : RequestHandlerBase<SearchClassroomQuery, Response<List<ClassroomDto>>>
+public class SearchClassroomQueryHandler : RequestHandlerBase<SearchClassroomQuery, Response<List<ClassroomListDto>>>
 {
     private readonly IApplicationDbContext _dbContext;
     private readonly IMapper _mapper;
@@ -34,14 +34,20 @@ public class SearchClassroomQueryHandler : RequestHandlerBase<SearchClassroomQue
         _mapper = mapper;
     }
 
-    public override async Task<Response<List<ClassroomDto>>> Handle(SearchClassroomQuery request, CancellationToken cancellationToken)
+    public override async Task<Response<List<ClassroomListDto>>> Handle(SearchClassroomQuery request, CancellationToken cancellationToken)
     {
         var query =
-             _dbContext.Classrooms.Where(x =>
-                    x.Name.Contains(request.Key))
-                .Skip((request.Page - 1) * request.Take).Take(request.Take);
-        var classrooms = await query.ToListAsync(cancellationToken: cancellationToken);
-        var classroomDto = _mapper.Map<List<ClassroomDto>>(classrooms);
-        return Response<List<ClassroomDto>>.Success(classroomDto,200,request.Take,request.Page,classrooms.Count);
+            _dbContext.Classrooms.Where(x =>
+                x.Name.Contains(request.Key) || x.Tag.Name.Contains(request.Key));
+        var rooms = await query
+            .Skip(request.Take * (request.Page-1))
+            .Take(request.Take).Select(x => new ClassroomListDto
+        {
+            Id = x.Id.ToString(),
+            Name = x.Name,
+            Tag = _mapper.Map<TagDto>(x.Tag)
+        }).ToListAsync(cancellationToken);
+        //var classrooms = await query.ToListAsync(cancellationToken: cancellationToken);
+        return Response<List<ClassroomListDto>>.Success(rooms,200,request.Take,request.Page,query.Count());
     }
 }

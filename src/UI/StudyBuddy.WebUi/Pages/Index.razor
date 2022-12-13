@@ -193,7 +193,15 @@
     {
         if (!string.IsNullOrEmpty(_searchText))
         {
-            var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>("https://localhost:7042/api/Classroom/related", true));
+            var httpRequest = (await Client.GetServiceResponseAsync<List<ClassroomListDto>>($"https://localhost:7042/api/Classroom/search/{_searchText}/{pageSize}/{_selected}", true));
+            if (httpRequest.StatusCode != 200)
+            {
+                Console.WriteLine(httpRequest.Error.Errors.First());
+            }
+            else
+            {
+                _classroomListDtos = httpRequest.Data;
+            }
         }
     }
     private async Task classroomProcess(string id)
