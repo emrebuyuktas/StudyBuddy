@@ -38,7 +38,7 @@ public class SearchClassroomQueryHandler : RequestHandlerBase<SearchClassroomQue
     {
         var query =
             _dbContext.Classrooms.Where(x =>
-                x.Name.Contains(request.Key) || x.Tag.Name.Contains(request.Key));
+                (x.Name.Contains(request.Key) || x.Tag.Name.Contains(request.Key)) && !x.Users.Any(x=>x.UserId == UserId));
         var rooms = await query
             .Skip(request.Take * (request.Page-1))
             .Take(request.Take).Select(x => new ClassroomListDto
