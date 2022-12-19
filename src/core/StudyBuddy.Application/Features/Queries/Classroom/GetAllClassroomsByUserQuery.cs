@@ -34,15 +34,17 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
 
     public override async Task<Response<List<UserClassroomDto>>> Handle(GetAllClassroomsByUserQuery request, CancellationToken cancellationToken)
     {
-        var rooms = await ( _dbContext.UserClassrooms.Where(x => x.UserId == UserId).
-            Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser)).Skip((request.Page - 1) * request.Take).Take(request.Take).Select(x=>new UserClassroomDto
+        var query = _dbContext.UserClassrooms.Where(x => x.UserId == UserId);
+        var count = query.Count();
+        var rooms = await query.
+            Include(x => x.Classroom).ThenInclude(y=>y.Tag).Include(x=>x.AppUser).Skip((request.Page - 1) * request.Take).Take(request.Take).Select(x=>new UserClassroomDto
         {
             ClassroomId = x.ClassroomId.ToString(),
             UserName = x.AppUser.UserName,
             ClassroomName = x.Classroom.Name,
-            Tag = _mapper.Map<TagDto>(x.Classroom.Tag)
+            Tag = _mapper.Map<TagDto>(x.Classroom.Tag),
+            UserCount = x.Classroom.Users.Count,
         }).ToListAsync(cancellationToken: cancellationToken);
-        var count = _dbContext.UserClassrooms.Count();
         return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page, (int)Math.Ceiling(((double)_dbContext.UserClassrooms.Count()/ request.Take)));
     }
 }

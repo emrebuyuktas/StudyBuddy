@@ -40,7 +40,8 @@ public class GetRelatedClassWithUserHandler : RequestHandlerBase<GetRelatedClass
             {
                 Id = x.Id.ToString(),
                 Name = x.Name,
-                Tag = _mapper.Map<TagDto>(x.Tag)
+                Tag = _mapper.Map<TagDto>(x.Tag),
+                UserCount = x.Users.Count
             }).ToList();
 
         return Response<List<ClassroomListDto>>.Success(classrooms, 200);
