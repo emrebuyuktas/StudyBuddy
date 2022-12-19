@@ -73,7 +73,7 @@
                                 <div class="progress-bar" role="progressbar" style="width: 50%" aria-valuenow="50" aria-valuemin="0" aria-valuemax="100"></div>
                             </div>
                             <div class="mt-3">
-                                <span class="text1">32 Applied <span class="text2">of 50 capacity</span></span>
+                                <span class="text1">@item.UserCount Applied <span class="text2">of 50 capacity</span></span>
                             </div>
                         </div>
                     </div>
@@ -85,7 +85,7 @@
         }}
         <div class="d-flex flex-column align-center">
             <MudPagination  Variant="Variant.Filled" ControlButtonClicked="async () => await GetData()"  Color="Color.Primary" Count="@totalPage"  @bind-Selected="@_selected"/>
-            <MudPagination Variant="Variant.Filled" Count="@totalPage"/>
+            
         </div>
     
     
