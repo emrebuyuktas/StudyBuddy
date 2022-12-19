@@ -36,6 +36,10 @@ public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomC
 
     public override async Task<Response<ClassroomDto>> Handle(CreateClassroomCommand request, CancellationToken cancellationToken)
     {
+        if(string.IsNullOrEmpty(request.Name) || request.Tag == null)
+        {
+            return Response<ClassroomDto>.Fail("classroom name and tag is required", 201);
+        }
         var classroom = new Domain.Entities.Classroom{Name = request.Name};
         var user = await _userManager.FindByIdAsync(UserId);
         classroom.Tag = await _dbContext.Tags.Where(x =>x.Id==request.Tag.Id).SingleAsync(cancellationToken: cancellationToken);

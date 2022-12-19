@@ -45,6 +45,8 @@ public class SignupCommand : IRequest<Response<UserDto>>
 
      public async Task<Response<UserDto>> Handle(SignupCommand request, CancellationToken cancellationToken)
      {
+         if(request.TagDtos.Count < 3)
+             return Response<UserDto>.Fail("You must choose at least 3 tag ", 400);
          var user = _mapper.Map<AppUser>(request);
          user.Tags=await _dbContext.Tags.Where(x => request.TagDtos.Select(y=>y.Id).Contains(x.Id)).ToListAsync(cancellationToken: cancellationToken);
          var result=await _userManager.CreateAsync(user, request.Password);
