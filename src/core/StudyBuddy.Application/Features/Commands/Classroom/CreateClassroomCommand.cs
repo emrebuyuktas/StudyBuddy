@@ -18,6 +18,12 @@ public class CreateClassroomCommand : IRequest<Response<ClassroomDto>>
 {
     public string Name { get; set; }
     public TagDto Tag { get; set; }
+
+    public CreateClassroomCommand(string name, TagDto tag)
+    {
+        Name = name;
+        Tag = tag;
+    }
 }
 
 public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomCommand, Response<ClassroomDto>>

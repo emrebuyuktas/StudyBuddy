@@ -1,6 +1,7 @@
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using StudyBuddy.Application.Dtos;
 using StudyBuddy.Application.Features.Commands.Classroom;
 using StudyBuddy.Application.Features.Queries.Classroom;
 using StudyBuddy.Application.Wrappers;
@@ -20,11 +21,9 @@ namespace StudyBuddy.API.Controllers.Classroom
         }
         
         [HttpPost("create")]
-        public async Task<IActionResult> CreateClass(CreateClassroomCommand createClassroomCommand)
-        {
-            var result=await _mediator.Send(createClassroomCommand);
-            return ActionResult(result);
-        }
+        public async Task<IActionResult> CreateClass(CreateClassroomDto createClassroomDto) =>
+            ActionResult(await _mediator.Send(new CreateClassroomCommand(createClassroomDto.Name,createClassroomDto.Tag)));
+        
         [HttpPost("join")]
         public async Task<IActionResult> JoinClass(JoinClassroomCommand joinClassroomCommand)
         {
