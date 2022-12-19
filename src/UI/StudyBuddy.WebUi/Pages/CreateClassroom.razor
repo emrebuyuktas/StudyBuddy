@@ -129,9 +129,9 @@
         var httpRequest = await Client.PostGetServiceResponseAsync<ClassroomDto, CreateClassDto>("https://localhost:7042/api/Classroom/create", _createClass);
 
 
-        if (httpRequest.StatusCode != 201)
+        if (httpRequest.StatusCode!=201)
         {
-            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First() )!;
         }
 
 

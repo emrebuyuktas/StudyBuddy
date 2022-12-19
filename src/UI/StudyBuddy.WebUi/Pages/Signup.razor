@@ -147,9 +147,9 @@
         var httpRequest = await Client.PostGetServiceResponseAsync<UserDto, SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
 
 
-        if (httpRequest.StatusCode != 201)
+        if (httpRequest.StatusCode!=201)
         {
-            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First())!;
+            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First() )!;
         }
 
 
