@@ -3,55 +3,139 @@
 @using MudBlazor
 @using StudyBuddy.WebUi.Interop
 @using StudyBuddy.WebUi.Models.VideoChat
-
+@layout EmptyLayout
 @using StudyBuddy.WebUi.Components
+@using StudyBuddy.WebUi.Models
+@using Microsoft.AspNetCore.Components
+<StudyBuddy.WebUi.CustomComponents.Chatcss></StudyBuddy.WebUi.CustomComponents.Chatcss>
+<div class="col-md-12">
+            <!-- start:chat room -->
+            <div class="box">
+                <div class="chat-room">
+                    <!-- start:aside kiri chat room -->
+                    <aside class="kiri-side" >
+                        <div class="user-head" >
+                            <i class="fa fa-comments-o"></i>
+                            <h3>StudyBuddy</h3>
+                        </div>
+                        
+                        <ul class="chat-list">
+                            <li >
+                                <h5 style="color: white; text-align: center">
+                                    
+                                    Rooms
+                                </h5>
 
-<div class="row h-100 pt-5">
-    <div class="col-3">
-        <div class="jumbotron p-4">
-            <Cameras CameraChanged="OnCameraChanged"/>
-            <h5><i class="fas fa-video"></i> Rooms</h5>
-            <div class="list-group">
-                @* <div class="list-group-item d-flex justify-content-between align-items-center"> *@
-                @*     <div class="input-group"> *@
-                @*         <input type="text" class="form-control form-control-lg" *@
-                @*                placeholder="Room name" aria-label="Room Name" disabled="@(_activeCamera is null)" *@
-                @*                @bind="_roomName" @onkeydown="@(async args => await TryAddRoom(args))" /> *@
-                @*         <div class="input-group-append"> *@
-                @*             <button class="btn btn-lg twilio-btn-red" *@
-                @*                     disabled="@(_activeCamera is null || _roomName is null)" *@
-                @*                     @onclick="@(async args => await TryAddRoom(args))"> *@
-                @*                 <i class="far fa-plus-square" aria-label="Create room"></i> Create *@
-                @*             </button> *@
-                @*         </div> *@
-                @*     </div> *@
-                @* </div> *@
+                            </li>
+                            <li>
+      
+                                <a href="#">
+                                    <i class="fa fa-rocket"></i>
+                                    <span>Video</span>
 
-                <div class="list-group-item d-flex justify-content-between align-items-center">
-                    <button class="btn btn-lg twilio-btn-red w-100" @onclick="@(async _ => await OnLeaveRoom())">Leave Room?</button>
+                                </a>
+                            </li>
+                            <li >
+                                <a href="@chatChatUrl">
+                                    <i class="fa fa-rocket"></i>
+                                    <span>Chat</span>
+                                    
+                                </a>
+                            </li>
+
+                        </ul>
+                        
+                    </aside>
+
+                    <aside class="tengah-side">
+                        <div class="chat-room-head" >
+                            <h3>@_classroomDto?.Name</h3>
+                            <form action="#" class="pull-right position">
+                                <input type="text" placeholder="Search" class="form-control search-btn ">
+                            </form>
+                        </div>
+                        <div class="row h-100 pt-5">
+                            <div class="col-3">
+                                <div class="jumbotron p-4">
+                                    <Cameras CameraChanged="OnCameraChanged"/>
+                                    <h5><i class="fas fa-video"></i> Rooms</h5>
+                                    <div class="list-group">
+                                        @* <div class="list-group-item d-flex justify-content-between align-items-center"> *@
+                                        @*     <div class="input-group"> *@
+                                        @*         <input type="text" class="form-control form-control-lg" *@
+                                        @*                placeholder="Room name" aria-label="Room Name" disabled="@(_activeCamera is null)" *@
+                                        @*                @bind="_roomName" @onkeydown="@(async args => await TryAddRoom(args))" /> *@
+                                        @*         <div class="input-group-append"> *@
+                                        @*             <button class="btn btn-lg twilio-btn-red" *@
+                                        @*                     disabled="@(_activeCamera is null || _roomName is null)" *@
+                                        @*                     @onclick="@(async args => await TryAddRoom(args))"> *@
+                                        @*                 <i class="far fa-plus-square" aria-label="Create room"></i> Create *@
+                                        @*             </button> *@
+                                        @*         </div> *@
+                                        @*     </div> *@
+                                        @* </div> *@
+                        
+                                        <div class="list-group-item d-flex justify-content-between align-items-center">
+                                            <button class="btn btn-lg twilio-btn-red w-100" @onclick="@(async _ => await OnLeaveRoom())">Leave Room?</button>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-9">
+                                <div id="participants" class="participants-grid">
+                                    <div class="embed-responsive embed-responsive-16by9">
+                                        <div id="camera" class="embed-responsive-item"></div>
+                                    </div>
+                                </div>
+                            </div>
+                            
+                        
+                        </div>
+                        
+                    </aside>
+                    <!-- end:aside tengah chat room -->
+
+                    <!-- start:aside kanan chat room -->
+                    <aside class="kanan-side">
+                        <div class="user-head">
+                            <h3>Online Users</h3>
+                        </div>
+                        <div class="portlet-body chat-widget" style="overflow-y: auto; width: auto; height: 890px;">
+                            <ul class="chat-available-user">
+                                @if (_classroomDto is not null)
+                                {
+                                    @foreach (var item in _classroomDto.AppUsers)
+                                    {
+                                        <li>
+                                           
+                                                <h5 style="text-align: left; margin-left: 60px">  @item.userName</h5>
+                                                
+                                                @* <span class="text-muted">3h:22m</span> *@
+                                          
+                                        </li>
+                                    }
+                                }
+
+                            </ul>
+                        </div>
+                    </aside>
+
+
                 </div>
             </div>
+            <!-- end:chat room -->
         </div>
-    </div>
-    <div class="col-9">
-        <div id="participants" class="participants-grid">
-            <div class="embed-responsive embed-responsive-16by9">
-                <div id="camera" class="embed-responsive-item"></div>
-            </div>
-        </div>
-    </div>
-    <MudSnackbarProvider></MudSnackbarProvider>
-    @inject ISnackbar Snackbar;
-    @if (_activeRoom is not null)
-    {
-        
-        @Snackbar.Add("Joined room", Severity.Success)
-    }
+    
 
-</div>
+
+
+
+
+
 
 @code {
-    
+    [Inject]
+    NavigationManager? NavManager { get; set; }
     [Inject]
     protected IJSRuntime? JavaScript { get; set; }
 
@@ -64,16 +148,20 @@
     [Parameter]
     public string? Id { get; set; }
 
-
+    private ClassroomDto _classroomDto;
     List<RoomDetails> _rooms = new List<RoomDetails>();
 
     string? _roomName;
     string? _activeCamera;
     string? _activeRoom;
     HubConnection? _hubConnection;
-
+    private string chatChatUrl = "";
     protected override async Task OnInitializedAsync()
     {
+        chatChatUrl=$"try/{Id}";
+        
+        var httpRequest = await Http.GetServiceResponseAsync<ClassroomDto>($"https://localhost:7042/api/Classroom/enter?classroomId={Id}");
+        _classroomDto = httpRequest.Data;
         _rooms = await Http.GetFromJsonAsync<List<RoomDetails>>("https://localhost:7165/api/twilio/rooms");
 
         if (Id is not null)
@@ -95,6 +183,9 @@
         {
             await JavaScript.StartVideoAsync(_activeCamera, "#camera");
         }
+        NavManager
+            .NavigateTo("/classes");
+        
     }
 
     async Task OnCameraChanged(string activeCamera) =>

@@ -21,6 +21,7 @@ namespace StudyBuddy.WebUi.Utils
         {
             var httpRes = await Client.PostAsJsonAsync(Url, Value);
             var responseData = await httpRes.Content.ReadAsStringAsync();
+            Console.WriteLine(responseData);
             var res = JsonSerializer.Deserialize<Response<TResult>>(responseData,jsonSerilizerOptions);
           
 
