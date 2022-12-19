@@ -36,7 +36,7 @@ public class CreateClassroomCommandHandler : RequestHandlerBase<CreateClassroomC
 
     public override async Task<Response<ClassroomDto>> Handle(CreateClassroomCommand request, CancellationToken cancellationToken)
     {
-        if(string.IsNullOrEmpty(request.Name) || request.Tag == null)
+        if(string.IsNullOrEmpty(request.Name) || string.IsNullOrEmpty(request.Tag.Name))
         {
             return Response<ClassroomDto>.Fail("classroom name and tag is required", 201);
         }
