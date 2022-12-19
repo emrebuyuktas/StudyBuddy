@@ -83,8 +83,11 @@
 
 
         }}
-
-    <MudPagination ControlButtonClicked="async () => await GetData()" Color="Color.Primary" Count="@totalPage" @bind-Selected="@_selected"/>
+        <div class="d-flex flex-column align-center">
+            <MudPagination  Variant="Variant.Filled" ControlButtonClicked="async () => await GetData()"  Color="Color.Primary" Count="@totalPage"  @bind-Selected="@_selected"/>
+            <MudPagination Variant="Variant.Filled" Count="@totalPage"/>
+        </div>
+    
     
     <MudText Align="Align.Center">Selected page: @_selected</MudText>
 

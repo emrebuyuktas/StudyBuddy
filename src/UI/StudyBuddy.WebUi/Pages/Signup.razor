@@ -142,8 +142,12 @@
     private async Task signUpProcess()
     {
         _signupDto.TagDtos = CheckBox;
-        
-        
+
+        if (string.IsNullOrEmpty(_signupDto.UserName) || string.IsNullOrEmpty(_signupDto.Email) ||string.IsNullOrEmpty(_signupDto.Password))
+        {
+            await ModalManager?.ShowMessageAsync("Login Error", "Enter name or email or password");
+        }
+        else{
         var httpRequest = await Client.PostGetServiceResponseAsync<UserDto, SignupDto>("https://localhost:7042/api/Auth/Signup", _signupDto);
 
 
@@ -169,5 +173,5 @@
 
         }
     }
-
+    }
 }

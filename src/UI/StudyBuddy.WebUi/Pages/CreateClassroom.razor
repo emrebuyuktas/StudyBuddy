@@ -3,7 +3,7 @@
 @using StudyBuddy.WebUi.Utils
 @using StudyBuddy.WebUi.Wrappers
 @using System.Net.Http.Headers
-@layout StudyBuddy.WebUi.Shared.EmptyLayout
+
 
 
 <body>
@@ -126,12 +126,17 @@
         var token = await LocalStorageService.GetItemAsync<string>("token");
         Client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
+        if (string.IsNullOrEmpty(_createClass.Name))
+        {
+            await ModalManager?.ShowMessageAsync("Create Error", "Please Enter Name");
+        }
+        else{
         var httpRequest = await Client.PostGetServiceResponseAsync<ClassroomDto, CreateClassDto>("https://localhost:7042/api/Classroom/create", _createClass);
 
 
         if (httpRequest.StatusCode!=201)
         {
-            await ModalManager?.ShowMessageAsync("Login Error", httpRequest.Error.Errors.First() )!;
+            await ModalManager?.ShowMessageAsync("Login Error", "Tag error");
         }
 
 
@@ -143,5 +148,5 @@
 
         }
     }
-
+    }
 }
