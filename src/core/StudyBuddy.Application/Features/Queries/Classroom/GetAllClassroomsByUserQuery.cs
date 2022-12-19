@@ -45,6 +45,6 @@ public class GetAllClassroomsByUserQueryHandler : RequestHandlerBase<GetAllClass
             Tag = _mapper.Map<TagDto>(x.Classroom.Tag),
             UserCount = x.Classroom.Users.Count,
         }).ToListAsync(cancellationToken: cancellationToken);
-        return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page, (int)Math.Ceiling(((double)_dbContext.UserClassrooms.Count()/ request.Take)));
+        return Response<List<UserClassroomDto>>.Success(rooms,200,request.Take,request.Page, (int)Math.Ceiling(((double)count/ request.Take)));
     }
 }
