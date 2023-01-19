@@ -16,4 +16,5 @@ Study Buddy was developed as a graduation project. The aim of the project is to 
 
 contributors: 
 [Emre Büyüktaş](https://github.com/emrebuyuktas)
+[Ömer Kılıççeker](https://github.com/Kilicceker)
 
