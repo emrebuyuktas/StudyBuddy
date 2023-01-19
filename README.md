@@ -15,7 +15,5 @@ Study Buddy was developed as a graduation project. The aim of the project is to 
 * MediatR pattern
 
 contributors: 
-<a href="https://github.com/emrebuyuktas/StudyBuddy/graphs/contributors">
-  <img src="https://contrib.rocks/image?repo=emrebuyuktas/StudyBuddy" />
-</a>
+[Emre Büyüktaş](https://github.com/emrebuyuktas)
 
