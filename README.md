@@ -15,7 +15,7 @@ Study Buddy was developed as a graduation project. The aim of the project is to 
 * MediatR pattern
 
 contributors: 
-<a href = "[https://github.com/Tanu-N-Prabhu/Python/graphs/contributors](https://github.com/emrebuyuktas/StudyBuddy/graphs/contributors)">
+<a href = "https://github.com/emrebuyuktas/StudyBuddy/graphs/contributors">
   <img src = "https://contrib.rocks/image?repo = emrebuyuktas/repository_name"/>
   <img src = "https://contrib.rocks/image?repo = kilicceker/repository_name"/>
 </a>
